@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="description" content="모바일 앱처럼 보이는 웹 앱">
+    <meta name="theme-color" content="#FFEBEE">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="My App">
+    <title>My App</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <style>
+        @font-face {
+            font-family: 'Moneygraph';
+            src: url('./Moneygraphy Font/WOFF EOT/Moneygraphy-Rounded.woff2') format('woff2'),
+                 url('./Moneygraphy Font/WOFF EOT/Moneygraphy-Rounded.woff') format('woff'),
+                 url('./Moneygraphy Font/TTF/Moneygraphy-Rounded.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --artboard-width: 390px;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Pretendard', sans-serif;
+            background: #FFEBEE;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .app-container {
+            max-width: var(--artboard-width);
+            margin: 0 auto;
+            background: #FFEBEE;
+            border-radius: 0;
+            box-shadow: none;
+            overflow: hidden;
+            min-height: 100vh;
+        }
+        
+        /* 헤더 스타일 - 토스처럼 */
+        .app-header {
+            background: #FFEBEE;
+            border-bottom: none;
+            padding: 16px 20px;
+            padding-top: calc(16px + env(safe-area-inset-top));
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            border-radius: 0 0 20px 20px;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .ai-card-container {
+            padding: 0 20px;
+            padding-top: 0px;
+            margin-top: 0px;
+            background: #FFEBEE;
+        }
+        
+        .ai-card-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        
+        .ai-card-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .ai-card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            pointer-events: none;
+        }
+        
+        .ai-card-header {
+            background: transparent;
+            color: #191f28;
+            padding: 0;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 12px;
+            text-transform: lowercase;
+            align-self: flex-start;
+        }
+        
+        .ai-card-content {
+            color: #191f28;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.2;
+            letter-spacing: -0.3px;
+            text-align: left;
+            padding-left: 20px;
+            margin-top: 0;
+            position: absolute;
+            bottom: 120px;
+            left: 200px;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+        
+        .notification-button {
+            margin-left: -12px;
+        }
+        
+        .notification-button {
+            background: none;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .notification-icon {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+        
+        .app-logo {
+            height: 28px;
+            width: auto;
+            object-fit: contain;
+        }
+        
+        .app-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #191f28;
+            letter-spacing: -0.5px;
+        }
+        
+        .menu-button {
+            background: none;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .settings-icon {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+        }
+        
+        .menu-button span {
+            width: 20px;
+            height: 2px;
+            background: #191f28;
+            border-radius: 2px;
+            transition: all 0.2s;
+        }
+        
+        /* 메인 콘텐츠 - 토스처럼 */
+        .app-main {
+            background: #FFEBEE;
+            padding: 20px 16px;
+            padding-bottom: 90px;
+            min-height: calc(100vh - 60px);
+            padding-top: 12px;
+        }
+        
+        .content-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        /* 카드 스타일 - 토스처럼 */
+        .card {
+            background: transparent;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: none;
+            border: none;
+        }
+        
+        .goal-card {
+            padding: 0;
+            overflow: hidden;
+            background: transparent;
+            box-shadow: none;
+            margin-top: -3px;
+            transition: none;
+        }
+        
+        .goal-card:active {
+            transform: none;
+        }
+        
+        .goal-card-wrapper {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .goal-card-content {
+            background: #4A0F50;
+            border-radius: 16px;
+            overflow: hidden;
+            width: 340px;
+            height: 520px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            position: relative;
+            padding: 20px;
+            margin-bottom: 18.9px;
+        }
+        
+        .goal-text-wrapper {
+            position: absolute;
+            top: 28px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 10;
+        }
+        
+        .goal-text-display {
+            flex: 1;
+            color: #ffffff;
+            font-family: 'Moneygraph', sans-serif;
+            font-size: 17px;
+            line-height: 1.5;
+            min-height: 24px;
+            display: flex;
+            align-items: center;
+            padding-left: 0.5em;
+        }
+        
+        .goal-text-display.empty {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .picker-icon {
+            width: 16px;
+            height: 16px;
+            display: block;
+            object-fit: contain;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        
+        .goal-text-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: #ffffff;
+            font-family: 'Moneygraph', sans-serif;
+            font-size: 17px;
+            padding: 0;
+            padding-left: 0.5em;
+            outline: none;
+            text-align: left;
+            height: 24px;
+            line-height: 24px;
+            transition: all 0.2s;
+        }
+        
+        .goal-text-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .goal-text-input:focus {
+            border-bottom-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .goal-text-wrapper.editing .goal-text-input {
+            border-bottom-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .goal-text-wrapper.editing .goal-text-input:focus {
+            border-bottom-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        
+        .goal-card:active {
+            transform: none;
+        }
+        
+        .white-box-content {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            width: 320px;
+            height: 440px;
+            margin: 50px 0 0 0;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .action-button {
+            width: 80px;
+            height: 26px;
+            background: #ffc0cc;
+            border: none;
+            border-radius: 20px;
+            color: #000000;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-button:active {
+            transform: scale(0.98);
+        }
+        
+        .completion-text {
+            position: absolute;
+            top: 34px;
+            right: 20px;
+            color: #000000;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 12px;
+            font-weight: 300;
+        }
+        
+        .field-container {
+            width: 288px;
+            height: 44px;
+            background: #FFEBEE;
+            border: 1px solid #e0e0e0;
+            border-radius: 16px;
+            position: absolute;
+            top: 62px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            gap: 8px;
+        }
+        
+        .date-badge {
+            width: 48px;
+            height: 30px;
+            background: #FFC0CC;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            color: #C24C4C;
+        }
+        
+        .field-input-area {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+        
+        .field-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-family: 'Moneygraph', sans-serif;
+            font-size: 17px;
+            color: #000000;
+            padding: 0;
+            transition: all 0.2s;
+        }
+        
+        .field-input::placeholder {
+            color: #F98C8C;
+            transition: color 0.2s;
+        }
+        
+        .field-container:focus-within {
+            background: #4A0F50;
+        }
+        
+        .field-container:focus-within .field-input::placeholder {
+            color: #ffffff;
+        }
+        
+        .field-container:focus-within .field-input {
+            color: #ffffff;
+        }
+        
+        /* 하단 네비게이션 - 토스처럼 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: var(--artboard-width);
+            background: #ffffff;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 12px 0;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            z-index: 100;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.02);
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .bottom-nav .nav-item {
+            flex: 1;
+            max-width: none;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            color: #8b95a1;
+            transition: all 0.2s;
+            padding: 8px 16px;
+            border-radius: 12px;
+        }
+        
+        .nav-item .nav-icon {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+        
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            stroke-width: 2;
+        }
+        
+        .nav-item span {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: -0.2px;
+        }
+        
+        .nav-item.active {
+            color: #FF3459;
+        }
+        
+        .nav-item.active .nav-icon {
+            opacity: 1;
+            filter: brightness(0) saturate(100%) invert(27%) sepia(98%) saturate(7151%) hue-rotate(330deg) brightness(101%) contrast(101%);
+        }
+        
+        .nav-item:not(.active) .nav-icon {
+            opacity: 0.4;
+            filter: grayscale(100%);
+        }
+        
+        .nav-item:active {
+            background: #f5f6f8;
+        }
+        
+        /* 사이드 메뉴 */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .side-menu.active {
+            pointer-events: all;
+            opacity: 1;
+        }
+        
+        .side-menu-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+        }
+        
+        .side-menu-content {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 280px;
+            max-width: 85%;
+            height: 100%;
+            background: #ffffff;
+            box-shadow: -2px 0 20px rgba(0, 0, 0, 0.1);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .side-menu.active .side-menu-content {
+            transform: translateX(0);
+        }
+        
+        .side-menu-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .side-menu-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #191f28;
+        }
+        
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 32px;
+            color: #191f28;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+        
+        .close-button:active {
+            background: #f5f6f8;
+        }
+        
+        .menu-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .menu-list li {
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .menu-link {
+            display: block;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: #191f28;
+            font-size: 16px;
+            transition: background-color 0.2s ease;
+        }
+        
+        .menu-link:active {
+            background-color: #f5f6f8;
+        }
+        
+        /* 모바일에서는 전체 화면 */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+            
+            .app-container {
+                max-width: 100vw;
+                border-radius: 0;
+            }
+            
+            .app-header {
+                border-radius: 0;
+            }
+            
+            .bottom-nav {
+                left: 0;
+                transform: none;
+                max-width: 100vw;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 상단 헤더 -->
+        <header class="app-header">
+            <div class="header-content">
+                <img src="https://i.imgur.com/ZpiANVp.png" alt="My App" class="app-logo">
+                <div class="header-actions">
+                    <button class="menu-button" id="menuBtn" aria-label="설정">
+                        <img src="https://i.imgur.com/S5Vfmmp.png" alt="설정" class="settings-icon">
+                    </button>
+                    <button class="notification-button" id="notificationBtn" aria-label="알림">
+                        <img src="https://i.imgur.com/Wdp01gZ.png" alt="알림" class="notification-icon">
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- AI 카드 -->
+        <div class="ai-card-container">
+            <div class="ai-card-wrapper">
+                <img src="https://i.imgur.com/Ip5Cc7g.png" alt="AI 카드" class="ai-card-image">
+                <div class="ai-card-overlay">
+                    <div class="ai-card-content">
+                        와이어프레임을<br>
+                        어서 빨리 끝내!<br>
+                        기간이 다가오고<br>
+                        있어.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 메인 콘텐츠 -->
+        <main class="app-main">
+            <div class="content-section">
+                <div class="card goal-card">
+                    <div class="goal-card-wrapper">
+                        <div class="goal-card-content">
+                            <div class="goal-text-wrapper">
+                                <div class="goal-text-display" id="goalTextDisplay">한 줄 다짐을 적어보아요</div>
+                                <input type="text" class="goal-text-input" id="goalTextInput" placeholder="한 줄 다짐을 적어보아요" style="display: none;">
+                                <img src="https://i.imgur.com/F8Onag4.png" alt="피커" class="picker-icon" id="pickerIcon">
+                            </div>
+                            
+                            <!-- 흰색 박스 -->
+                            <div class="white-box-content">
+                                <button class="action-button">2025 08</button>
+                                <div class="completion-text">완료도: 0 %</div>
+                                <div class="field-container">
+                                    <div class="date-badge">0/00</div>
+                                    <div class="field-input-area">
+                                        <input type="text" class="field-input" placeholder="입력해주세요">
+                                    </div>
+                                </div>
+                                <!-- 흰색 박스 내용 -->
+                            </div>
+                            <!-- 기간목표 내용 영역 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 하단 네비게이션 -->
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item" data-page="training">
+                <img src="https://i.imgur.com/mmS5Mfi.png" alt="트레이닝" class="nav-icon">
+                <span>트레이닝</span>
+            </a>
+            <a href="#" class="nav-item active" data-page="home">
+                <img src="https://i.imgur.com/5F8TNT3.png" alt="홈" class="nav-icon">
+                <span>홈</span>
+            </a>
+            <a href="#" class="nav-item" data-page="my">
+                <img src="https://i.imgur.com/Ysm8Cyp.png" alt="마이" class="nav-icon">
+                <span>마이</span>
+            </a>
+        </nav>
+
+        <!-- 사이드 메뉴 -->
+        <div class="side-menu" id="sideMenu">
+            <div class="side-menu-overlay" id="menuOverlay"></div>
+            <div class="side-menu-content">
+                <div class="side-menu-header">
+                    <h2>메뉴</h2>
+                    <button class="close-button" id="closeMenuBtn" aria-label="닫기">×</button>
+                </div>
+                <ul class="menu-list">
+                    <li><a href="#" class="menu-link">설정</a></li>
+                    <li><a href="#" class="menu-link">도움말</a></li>
+                    <li><a href="#" class="menu-link">정보</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // 피커 아이콘 클릭 이벤트
+        const pickerIcon = document.getElementById('pickerIcon');
+        const goalTextInput = document.getElementById('goalTextInput');
+        const goalTextDisplay = document.getElementById('goalTextDisplay');
+        const goalTextWrapper = document.querySelector('.goal-text-wrapper');
+        
+        if (pickerIcon && goalTextInput && goalTextDisplay && goalTextWrapper) {
+            pickerIcon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                goalTextWrapper.classList.add('editing');
+                goalTextDisplay.style.display = 'none';
+                goalTextInput.style.display = 'block';
+                goalTextInput.value = goalTextDisplay.textContent === '한 줄 다짐을 적어보아요' ? '' : goalTextDisplay.textContent;
+                setTimeout(() => goalTextInput.focus(), 10);
+            });
+            
+            // 입력 완료 시 (Enter 키 또는 포커스 아웃)
+            goalTextInput.addEventListener('blur', function() {
+                const value = this.value.trim();
+                if (value === '') {
+                    goalTextDisplay.textContent = '한 줄 다짐을 적어보아요';
+                    goalTextDisplay.classList.add('empty');
+                } else {
+                    goalTextDisplay.textContent = value;
+                    goalTextDisplay.classList.remove('empty');
+                }
+                goalTextWrapper.classList.remove('editing');
+                goalTextInput.style.display = 'none';
+                goalTextDisplay.style.display = 'flex';
+            });
+            
+            goalTextInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.blur();
+                }
+            });
+        }
+    </script>
+</body>
+</html> 
+
