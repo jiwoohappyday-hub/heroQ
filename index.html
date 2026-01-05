@@ -464,7 +464,11 @@
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: 12px;
             font-weight: 700;
-            color: #C24C4C;
+            color: #c24c4c;
+        }
+
+        .date-badge.date-selected {
+            color: #282B30;
         }
         
         .field-input-area {
@@ -550,6 +554,74 @@
         .bottom-field-container.dragging {
             opacity: 0.5;
         }
+
+        .field-container.dragging,
+        .bottom-field-container.dragging {
+            will-change: transform;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* 스와이프 삭제 기능 */
+        .swipe-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            margin-bottom: 0;
+        }
+
+        .swipe-wrapper.bottom-swipe {
+            border-radius: 12px;
+            overflow: visible;
+        }
+
+        .swipe-delete-bg {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            background: #FF3459;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 20px;
+            color: #ffffff;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .swipe-wrapper.bottom-swipe .swipe-delete-bg {
+            border-radius: 12px;
+        }
+
+        .swipe-content {
+            position: relative;
+            background: #FFEBEE;
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+
+        .swipe-content.swiping {
+            transition: none;
+        }
+
+        .swipe-content.returning {
+            transition: transform 0.3s ease-out;
+        }
+
+        .swipe-content.deleting {
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+            opacity: 0;
+        }
         
         .field-container.drag-over {
             border: 2px dashed #4A0F50;
@@ -603,14 +675,27 @@
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: 12px;
             font-weight: 700;
-            color: #191f28;
+            color: #c1c1c1;
             position: relative;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background 0.2s, color 0.2s;
         }
-        
-        .bottom-field-container.completed .bottom-date-badge {
+
+        .bottom-date-badge.date-selected {
+            color: #282B30;
             background: #FFC0CC;
+        }
+
+        /* 상단-하단 필드 연결선 */
+        .bottom-date-badge::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1px;
+            height: 8px;
+            background: #E0E0E0;
         }
         
         /* 하단 날짜 배지 옆 필드 */
@@ -668,6 +753,7 @@
             outline: none;
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: 16px;
+            font-weight: 600;
             color: #191f28;
             padding: 0;
             transition: all 0.2s;
@@ -677,6 +763,7 @@
             color: #999999;
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: 16px;
+            font-weight: 600;
             transition: color 0.2s;
         }
         
@@ -1266,6 +1353,8 @@
                         if (currentDateElement && currentPickerType === 'date-badge') {
                             const [year, month, day] = selectedDate.split('-');
                             currentDateElement.textContent = `${day}/${month}`;
+                            // 날짜 선택 완료 시 글씨 색상 검정으로 변경
+                            currentDateElement.classList.add('date-selected');
                         }
                         if (datePickerOverlay) {
                             datePickerOverlay.classList.remove('active');
@@ -1492,9 +1581,10 @@
             // 드래그 중 이벤트
             const handleMove = function(e) {
                 if (!draggedElement) return;
+                e.preventDefault();
                 const currentY = e.touches ? e.touches[0].clientY : e.clientY;
                 const deltaY = currentY - dragStartY;
-                draggedElement.style.transform = `translateY(${deltaY}px)`;
+                draggedElement.style.transform = `translate3d(0, ${deltaY}px, 0)`;
                 
                 // 드롭 영역 찾기
                 const allFieldsWrapper = document.getElementById('allFieldsWrapper');
@@ -1563,7 +1653,7 @@
                 document.removeEventListener('mouseup', handleEnd);
             };
             
-            document.addEventListener('touchmove', handleMove);
+            document.addEventListener('touchmove', handleMove, { passive: false });
             document.addEventListener('touchend', handleEnd);
             document.addEventListener('mousemove', handleMove);
             document.addEventListener('mouseup', handleEnd);
@@ -1595,8 +1685,7 @@
             fieldContainer.appendChild(dateBadge);
             fieldContainer.appendChild(fieldInputArea);
             
-            // 새로 생성된 필드는 핑크색부터 시작
-            fieldContainer.classList.add('completed');
+            // 새로 생성된 필드는 기본 상태로 시작 (핑크색 아님)
             
             // 드래그 핸들 추가
             const dragHandle = document.createElement('div');
@@ -1615,18 +1704,32 @@
             
             // 자동 포커스 제거 - 사용자가 클릭해야만 입력 가능
             
+            // 입력 전 값 저장
+            let previousValue = '';
+            
+            input.addEventListener('focus', function() {
+                previousValue = this.value.trim();
+            });
+            
             // 입력 완료 시 바로 아래에 하단 필드 생성, 그리고 맨 아래에 새로운 상단 필드 생성
             input.addEventListener('blur', function() {
                 const value = this.value.trim();
-                if (value !== '') {
+                const hasBottomField = fieldContainer.getAttribute('data-has-bottom-field') === 'true';
+                
+                // 값이 있고, 이전에 값이 없었고, 하단 필드가 없을 때만 새 필드 생성
+                if (value !== '' && previousValue === '' && !hasBottomField) {
                     // 상단 필드를 핑크색으로 변경
                     fieldContainer.classList.add('completed');
                     
                     // 바로 아래에 하단 필드 생성
                     createBottomField(fieldContainer);
+                    fieldContainer.setAttribute('data-has-bottom-field', 'true');
                     
                     // 맨 아래에 새로운 상단 필드 생성 (레이아웃이 늘어나면서)
                     createTopField();
+                } else if (value !== '') {
+                    // 값이 있으면 completed 상태 유지
+                    fieldContainer.classList.add('completed');
                 }
             });
             
@@ -1694,19 +1797,27 @@
                 allFieldsWrapper.appendChild(fieldContainer);
             }
             
-            // 새로 생성된 필드에 포커스
-            setTimeout(() => {
-                input.focus();
-            }, 10);
+            // 자동 포커스 제거 - 사용자가 직접 클릭해야만 입력 가능
+            
+            // 입력 전 값 저장
+            let bottomPreviousValue = '';
+            
+            input.addEventListener('focus', function() {
+                bottomPreviousValue = this.value.trim();
+            });
             
             // 입력 완료 시 새로운 하단 필드만 생성
             input.addEventListener('blur', function() {
                 const value = this.value.trim();
-                if (value !== '') {
+                // 값이 있고, 이전에 값이 없었을 때만 새 필드 생성
+                if (value !== '' && bottomPreviousValue === '') {
                     // 입력 완료 시 진한 색으로 변경
                     fieldContainer.classList.add('completed');
                     // 새로운 하단 필드 생성
                     createBottomField(fieldContainer);
+                } else if (value !== '') {
+                    // 값이 있으면 completed 상태 유지
+                    fieldContainer.classList.add('completed');
                 } else {
                     // 입력이 비어있으면 연한 회색으로 유지
                     fieldContainer.classList.remove('completed');
@@ -1760,17 +1871,31 @@
                     setupDateButtonClick(dateBadge, 'date-badge');
                 }
                 
+                // 입력 전 값 저장
+                let firstPreviousValue = '';
+                
+                firstTopField.addEventListener('focus', function() {
+                    firstPreviousValue = this.value.trim();
+                });
+                
                 firstTopField.addEventListener('blur', function() {
                     const value = this.value.trim();
-                    if (value !== '') {
+                    const hasBottomField = firstTopFieldContainer.getAttribute('data-has-bottom-field') === 'true';
+                    
+                    // 값이 있고, 이전에 값이 없었고, 하단 필드가 없을 때만 새 필드 생성
+                    if (value !== '' && firstPreviousValue === '' && !hasBottomField) {
                         // 상단 필드를 핑크색으로 변경
                         firstTopFieldContainer.classList.add('completed');
                         
                         // 바로 아래에 하단 필드 생성
                         createBottomField(firstTopFieldContainer);
+                        firstTopFieldContainer.setAttribute('data-has-bottom-field', 'true');
                         
                         // 맨 아래에 새로운 상단 필드 생성 (레이아웃이 늘어나면서)
                         createTopField();
+                    } else if (value !== '') {
+                        // 값이 있으면 completed 상태 유지
+                        firstTopFieldContainer.classList.add('completed');
                     }
                 });
                 
@@ -1788,6 +1913,122 @@
         if (actionButton) {
             setupDateButtonClick(actionButton, 'action-button');
         }
+
+        // 스와이프 삭제 기능
+        function setupSwipeToDelete(element, isBottomField = false) {
+            let startX = 0;
+            let currentX = 0;
+            let isSwiping = false;
+            const deleteThreshold = 100; // 삭제 임계값 (px)
+
+            // 스와이프 wrapper 생성
+            const wrapper = document.createElement('div');
+            wrapper.className = isBottomField ? 'swipe-wrapper bottom-swipe' : 'swipe-wrapper';
+
+            // 삭제 배경 생성
+            const deleteBg = document.createElement('div');
+            deleteBg.className = 'swipe-delete-bg';
+            deleteBg.innerHTML = '<span>삭제</span>';
+
+            // 스와이프 콘텐츠 wrapper 생성
+            const content = document.createElement('div');
+            content.className = 'swipe-content';
+
+            // 기존 요소를 wrapper로 감싸기
+            element.parentNode.insertBefore(wrapper, element);
+            wrapper.appendChild(deleteBg);
+            wrapper.appendChild(content);
+            content.appendChild(element);
+
+            content.addEventListener('touchstart', function(e) {
+                if (isDragging) return;
+                startX = e.touches[0].clientX;
+                currentX = 0;
+                isSwiping = false;
+                content.classList.remove('returning');
+                content.classList.add('swiping');
+            }, { passive: true });
+
+            content.addEventListener('touchmove', function(e) {
+                if (isDragging) return;
+                const touchX = e.touches[0].clientX;
+                const deltaX = touchX - startX;
+
+                // 왼쪽으로만 스와이프 (음수 값)
+                if (deltaX < 0) {
+                    isSwiping = true;
+                    currentX = deltaX;
+                    content.style.transform = `translate3d(${deltaX}px, 0, 0)`;
+
+                    // 배경 투명도 조절
+                    const progress = Math.min(Math.abs(deltaX) / deleteThreshold, 1);
+                    deleteBg.style.opacity = progress;
+                }
+            }, { passive: true });
+
+            content.addEventListener('touchend', function(e) {
+                if (isDragging) return;
+                content.classList.remove('swiping');
+
+                if (isSwiping && Math.abs(currentX) >= deleteThreshold) {
+                    // 삭제 실행
+                    content.classList.add('deleting');
+                    content.style.transform = `translate3d(-100%, 0, 0)`;
+
+                    setTimeout(() => {
+                        wrapper.remove();
+                    }, 300);
+                } else {
+                    // 원래 위치로 복귀
+                    content.classList.add('returning');
+                    content.style.transform = 'translate3d(0, 0, 0)';
+                    deleteBg.style.opacity = '0';
+                }
+
+                isSwiping = false;
+                currentX = 0;
+            });
+
+            return wrapper;
+        }
+
+        // 기존 필드에 스와이프 기능 추가
+        function addSwipeToExistingFields() {
+            const allFieldsWrapper = document.getElementById('allFieldsWrapper');
+            if (!allFieldsWrapper) return;
+
+            const fields = allFieldsWrapper.querySelectorAll('.field-container:not(.swipe-initialized), .bottom-field-container:not(.swipe-initialized)');
+            fields.forEach(field => {
+                const isBottom = field.classList.contains('bottom-field-container');
+                setupSwipeToDelete(field, isBottom);
+                field.classList.add('swipe-initialized');
+            });
+        }
+
+        // 초기 필드에 스와이프 기능 적용
+        addSwipeToExistingFields();
+
+        // 필드 생성 함수 수정 - createTopField 원본 저장
+        const originalCreateTopField = createTopField;
+        createTopField = function(afterElement) {
+            const field = originalCreateTopField(afterElement);
+            if (field) {
+                setupSwipeToDelete(field, false);
+                field.classList.add('swipe-initialized');
+            }
+            return field;
+        };
+
+        // 필드 생성 함수 수정 - createBottomField 원본 저장
+        const originalCreateBottomField = createBottomField;
+        createBottomField = function(afterElement) {
+            const field = originalCreateBottomField(afterElement);
+            if (field) {
+                setupSwipeToDelete(field, true);
+                field.classList.add('swipe-initialized');
+            }
+            return field;
+        };
     </script>
 </body>
 </html>
