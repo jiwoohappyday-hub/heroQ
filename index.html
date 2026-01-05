@@ -560,10 +560,21 @@
             will-change: transform;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
             pointer-events: none;
             z-index: 1000;
+            opacity: 0.9;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transform-origin: center center;
+        }
+
+        .field-container,
+        .bottom-field-container {
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+        }
+
+        .field-container.moving,
+        .bottom-field-container.moving {
+            transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1);
         }
 
         /* 스와이프 삭제 기능 */
@@ -608,6 +619,10 @@
             will-change: transform;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
+        }
+
+        .swipe-wrapper.bottom-swipe .swipe-content {
+            background: transparent;
         }
 
         .swipe-content.swiping {
@@ -1576,83 +1591,134 @@
             isDragging = true;
             draggedElement = element;
             dragStartY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            // 요소의 초기 위치 저장
+            const rect = element.getBoundingClientRect();
+            const initialTop = rect.top;
+
             element.classList.add('dragging');
-            
+            element.style.transition = 'none';
+
             // 드래그 중 이벤트
             const handleMove = function(e) {
                 if (!draggedElement) return;
                 e.preventDefault();
+
                 const currentY = e.touches ? e.touches[0].clientY : e.clientY;
                 const deltaY = currentY - dragStartY;
-                draggedElement.style.transform = `translate3d(0, ${deltaY}px, 0)`;
-                
-                // 드롭 영역 찾기
-                const allFieldsWrapper = document.getElementById('allFieldsWrapper');
-                const elements = Array.from(allFieldsWrapper.children);
-                let targetElement = null;
-                
-                for (let el of elements) {
-                    if (el === draggedElement) continue;
-                    const rect = el.getBoundingClientRect();
-                    const elY = rect.top + rect.height / 2;
-                    
-                    if (currentY < elY) {
-                        targetElement = el;
-                        break;
-                    }
-                }
-                
-                // 드롭 영역 표시
-                elements.forEach(el => {
-                    if (el !== draggedElement) {
-                        el.classList.remove('drag-over');
+
+                // 부드러운 이동을 위한 requestAnimationFrame
+                requestAnimationFrame(() => {
+                    if (draggedElement) {
+                        draggedElement.style.transform = `translate3d(0, ${deltaY}px, 0) scale(1.02)`;
                     }
                 });
-                
-                if (targetElement && targetElement !== draggedElement) {
-                    targetElement.classList.add('drag-over');
-                }
-            };
-            
-            const handleEnd = function(e) {
-                if (!draggedElement) return;
-                
+
+                // 드롭 영역 찾기 - swipe-wrapper 고려
                 const allFieldsWrapper = document.getElementById('allFieldsWrapper');
-                const elements = Array.from(allFieldsWrapper.children);
-                const currentY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
-                
-                let targetElement = null;
-                for (let el of elements) {
-                    if (el === draggedElement) continue;
-                    const rect = el.getBoundingClientRect();
-                    const elY = rect.top + rect.height / 2;
-                    
+                const wrappers = Array.from(allFieldsWrapper.children);
+                let targetWrapper = null;
+
+                for (let wrapper of wrappers) {
+                    // swipe-wrapper인 경우 내부 요소 확인
+                    const fieldElement = wrapper.classList.contains('swipe-wrapper')
+                        ? wrapper.querySelector('.field-container, .bottom-field-container')
+                        : wrapper;
+
+                    if (!fieldElement || fieldElement === draggedElement) continue;
+
+                    const wrapperRect = wrapper.getBoundingClientRect();
+                    const elY = wrapperRect.top + wrapperRect.height / 2;
+
                     if (currentY < elY) {
-                        targetElement = el;
+                        targetWrapper = wrapper;
                         break;
                     }
                 }
-                
-                // 드롭 처리
-                if (targetElement) {
-                    allFieldsWrapper.insertBefore(draggedElement, targetElement);
-                } else {
-                    allFieldsWrapper.appendChild(draggedElement);
+
+                // 드롭 영역 표시
+                wrappers.forEach(wrapper => {
+                    const fieldElement = wrapper.classList.contains('swipe-wrapper')
+                        ? wrapper.querySelector('.field-container, .bottom-field-container')
+                        : wrapper;
+                    if (fieldElement && fieldElement !== draggedElement) {
+                        fieldElement.classList.remove('drag-over');
+                    }
+                });
+
+                if (targetWrapper) {
+                    const targetField = targetWrapper.classList.contains('swipe-wrapper')
+                        ? targetWrapper.querySelector('.field-container, .bottom-field-container')
+                        : targetWrapper;
+                    if (targetField) {
+                        targetField.classList.add('drag-over');
+                    }
                 }
-                
-                // 정리
-                elements.forEach(el => el.classList.remove('drag-over'));
-                draggedElement.classList.remove('dragging');
+            };
+
+            const handleEnd = function(e) {
+                if (!draggedElement) return;
+
+                const allFieldsWrapper = document.getElementById('allFieldsWrapper');
+                const wrappers = Array.from(allFieldsWrapper.children);
+                const currentY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+
+                let targetWrapper = null;
+                for (let wrapper of wrappers) {
+                    const fieldElement = wrapper.classList.contains('swipe-wrapper')
+                        ? wrapper.querySelector('.field-container, .bottom-field-container')
+                        : wrapper;
+
+                    if (!fieldElement || fieldElement === draggedElement) continue;
+
+                    const wrapperRect = wrapper.getBoundingClientRect();
+                    const elY = wrapperRect.top + wrapperRect.height / 2;
+
+                    if (currentY < elY) {
+                        targetWrapper = wrapper;
+                        break;
+                    }
+                }
+
+                // 부드러운 복귀 애니메이션
+                draggedElement.style.transition = 'transform 0.25s cubic-bezier(0.2, 0, 0, 1)';
                 draggedElement.style.transform = '';
-                draggedElement = null;
-                isDragging = false;
-                
+
+                // 드롭 처리 - 드래그된 요소의 swipe-wrapper 찾기
+                const draggedWrapper = draggedElement.closest('.swipe-wrapper') || draggedElement;
+
+                setTimeout(() => {
+                    if (targetWrapper) {
+                        allFieldsWrapper.insertBefore(draggedWrapper, targetWrapper);
+                    } else {
+                        allFieldsWrapper.appendChild(draggedWrapper);
+                    }
+
+                    // 정리
+                    wrappers.forEach(wrapper => {
+                        const fieldElement = wrapper.classList.contains('swipe-wrapper')
+                            ? wrapper.querySelector('.field-container, .bottom-field-container')
+                            : wrapper;
+                        if (fieldElement) {
+                            fieldElement.classList.remove('drag-over');
+                        }
+                    });
+
+                    if (draggedElement) {
+                        draggedElement.classList.remove('dragging');
+                        draggedElement.style.transition = '';
+                        draggedElement.style.transform = '';
+                    }
+                    draggedElement = null;
+                    isDragging = false;
+                }, 50);
+
                 document.removeEventListener('touchmove', handleMove);
                 document.removeEventListener('touchend', handleEnd);
                 document.removeEventListener('mousemove', handleMove);
                 document.removeEventListener('mouseup', handleEnd);
             };
-            
+
             document.addEventListener('touchmove', handleMove, { passive: false });
             document.addEventListener('touchend', handleEnd);
             document.addEventListener('mousemove', handleMove);
