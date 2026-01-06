@@ -439,7 +439,8 @@
             width: 288px;
             height: 44px;
             background: #FFEBEE;
-            border: 1px solid #e0e0e0;
+            border: none;
+            box-shadow: inset 0 0 0 0.5px #4A0F50;
             border-radius: 16px;
             display: flex;
             align-items: center;
@@ -710,9 +711,9 @@
             top: -8px;
             left: 50%;
             transform: translateX(-50%);
-            width: 1px;
+            width: 0.5px;
             height: 8px;
-            background: #E0E0E0;
+            background: #4A0F50;
         }
         
         /* 하단 날짜 배지 옆 필드 */
@@ -720,7 +721,8 @@
             width: 13.79981rem;
             height: 1.875rem;
             border-radius: 0.75rem;
-            border: 0.1px solid #F0F0F0;
+            border: none;
+            box-shadow: inset 0 0 0 0.5px #4A0F50;
             background: #FFF;
             display: flex;
             align-items: center;
@@ -825,7 +827,8 @@
             width: 288px;
             height: 44px;
             background: #FFEBEE;
-            border: 1px solid #e0e0e0;
+            border: none;
+            box-shadow: inset 0 0 0 0.5px #4A0F50;
             border-radius: 16px;
             display: flex;
             align-items: center;
@@ -901,8 +904,7 @@
         }
 
         .daily-field-container.completed .daily-field-input {
-            text-decoration: line-through;
-            color: #999999;
+            color: #191f28;
         }
 
         /* 탭 버튼 활성 상태 */
@@ -1518,9 +1520,12 @@
                     setTimeout(() => {
                         if (currentDateElement && currentPickerType === 'date-badge') {
                             const [year, month, day] = selectedDate.split('-');
-                            currentDateElement.textContent = `${day}/${month}`;
+                            currentDateElement.textContent = `${month}/${day}`;
                             // 날짜 선택 완료 시 글씨 색상 검정으로 변경
                             currentDateElement.classList.add('date-selected');
+                        } else if (currentDateElement && currentPickerType === 'daily-date') {
+                            const [year, month, day] = selectedDate.split('-');
+                            currentDateElement.textContent = `${year}년 ${parseInt(month)}월 ${parseInt(day)}일`;
                         }
                         if (datePickerOverlay) {
                             datePickerOverlay.classList.remove('active');
@@ -1616,16 +1621,29 @@
                 button.addEventListener('click', function() {
                     const month = parseInt(this.dataset.month);
                     currentDate.setMonth(month - 1);
-                    
+
                     if (currentDateElement && currentPickerType === 'action-button') {
                         const year = currentDate.getFullYear();
                         const monthStr = String(month).padStart(2, '0');
                         currentDateElement.textContent = `${year} ${monthStr}`;
                     }
-                    
+
                     // 선택된 날짜 초기화 (새로운 월이 선택되었으므로)
                     selectedDate = null;
-                    
+
+                    // 모든 날짜 배지의 월 업데이트
+                    const monthStrForBadge = String(month).padStart(2, '0');
+                    document.querySelectorAll('.date-badge').forEach(badge => {
+                        if (!badge.classList.contains('date-selected')) {
+                            badge.textContent = `${monthStrForBadge}/00`;
+                        }
+                    });
+                    document.querySelectorAll('.bottom-date-badge').forEach(badge => {
+                        if (!badge.classList.contains('date-selected')) {
+                            badge.textContent = `${monthStrForBadge}/00`;
+                        }
+                    });
+
                     if (yearMonthPickerOverlay) {
                         yearMonthPickerOverlay.classList.remove('active');
                     }
@@ -1888,7 +1906,8 @@
             
             const dateBadge = document.createElement('div');
             dateBadge.className = 'date-badge';
-            dateBadge.textContent = '0/00';
+            const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+            dateBadge.textContent = `${currentMonth}/00`;
             
             const fieldInputArea = document.createElement('div');
             fieldInputArea.className = 'field-input-area';
@@ -1901,9 +1920,12 @@
             fieldInputArea.appendChild(input);
             fieldContainer.appendChild(dateBadge);
             fieldContainer.appendChild(fieldInputArea);
-            
+
             // 새로 생성된 필드는 기본 상태로 시작 (핑크색 아님)
-            
+
+            // 날짜 배지 클릭 이벤트 추가
+            setupDateButtonClick(dateBadge, 'date-badge');
+
             // 드래그 핸들 추가
             const dragHandle = document.createElement('div');
             dragHandle.className = 'drag-handle';
@@ -1912,9 +1934,10 @@
             });
             fieldContainer.appendChild(dragHandle);
             
-            // afterElement가 있으면 그 다음에, 없으면 맨 아래에 추가
-            if (afterElement && afterElement.nextSibling) {
-                allFieldsWrapper.insertBefore(fieldContainer, afterElement.nextSibling);
+            // afterElement가 있으면 그 다음에, 없으면 맨 아래에 추가 (swipe-wrapper 고려)
+            const afterWrapper = afterElement ? (afterElement.closest('.swipe-wrapper') || afterElement) : null;
+            if (afterWrapper && afterWrapper.nextSibling) {
+                allFieldsWrapper.insertBefore(fieldContainer, afterWrapper.nextSibling);
             } else {
                 allFieldsWrapper.appendChild(fieldContainer);
             }
@@ -2007,9 +2030,12 @@
                 setupDateButtonClick(bottomDateBadge, 'date-badge');
             }
             
-            // afterElement 다음에 삽입
-            if (afterElement && afterElement.nextSibling) {
-                allFieldsWrapper.insertBefore(fieldContainer, afterElement.nextSibling);
+            // afterElement 다음에 삽입 (swipe-wrapper 고려)
+            const afterWrapper = afterElement ? (afterElement.closest('.swipe-wrapper') || afterElement) : null;
+            if (afterWrapper && afterWrapper.nextSibling) {
+                allFieldsWrapper.insertBefore(fieldContainer, afterWrapper.nextSibling);
+            } else if (afterWrapper) {
+                allFieldsWrapper.insertBefore(fieldContainer, afterWrapper.nextSibling);
             } else {
                 allFieldsWrapper.appendChild(fieldContainer);
             }
