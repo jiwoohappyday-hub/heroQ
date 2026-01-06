@@ -606,6 +606,8 @@
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: 14px;
             font-weight: 600;
+            opacity: 0;
+            pointer-events: none;
         }
 
         .swipe-wrapper.bottom-swipe .swipe-delete-bg {
@@ -782,6 +784,138 @@
             transition: color 0.2s;
         }
         
+        /* 일일목표 스타일 */
+        .daily-date-header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+        }
+
+        .daily-date-button {
+            background: #ffc0cc;
+            border: none;
+            border-radius: 20px;
+            color: #000000;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 6px 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .daily-date-button:active {
+            transform: scale(0.98);
+        }
+
+        .daily-fields-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 288px;
+            margin: 50px auto 0;
+        }
+
+        .daily-field-container {
+            width: 288px;
+            height: 44px;
+            background: #FFEBEE;
+            border: 1px solid #e0e0e0;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            gap: 12px;
+            transition: background 0.2s;
+        }
+
+        .daily-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #c1c1c1;
+            border-radius: 50%;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .daily-checkbox.checked {
+            background: #FF3459;
+            border-color: #FF3459;
+        }
+
+        .daily-checkbox.checked::after {
+            content: '✓';
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .daily-field-input-area {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .daily-field-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            color: #000000;
+            padding: 0;
+            transition: all 0.2s;
+        }
+
+        .daily-field-input::placeholder {
+            color: #999999;
+            transition: color 0.2s;
+        }
+
+        .daily-field-container:focus-within {
+            background: #4A0F50;
+        }
+
+        .daily-field-container:focus-within .daily-field-input {
+            color: #ffffff !important;
+        }
+
+        .daily-field-container:focus-within .daily-field-input::placeholder {
+            color: #ffffff !important;
+        }
+
+        .daily-field-container:focus-within .daily-checkbox {
+            border-color: #ffffff;
+        }
+
+        .daily-field-container.completed .daily-field-input {
+            text-decoration: line-through;
+            color: #999999;
+        }
+
+        /* 탭 버튼 활성 상태 */
+        .yellow-button.active {
+            background: #4A0F50;
+            box-shadow: 0 4px 12px rgba(74, 15, 80, 0.4);
+        }
+
+        .pink-button.active {
+            background: #FF9BAD;
+            box-shadow: 0 4px 12px rgba(255, 155, 173, 0.4);
+        }
+
         /* 날짜 선택 컴포넌트 */
         .date-picker-overlay {
             position: fixed;
@@ -1206,8 +1340,8 @@
                                 <img src="https://i.imgur.com/F8Onag4.png" alt="피커" class="picker-icon" id="pickerIcon">
                             </div>
                             
-                            <!-- 흰색 박스 -->
-                            <div class="white-box-content">
+                            <!-- 흰색 박스 - 기간목표 -->
+                            <div class="white-box-content" id="periodGoalContent">
                                 <button class="action-button">2025 08</button>
                                 <div class="completion-text">완료도: 0 %</div>
                                 <!-- 모든 필드들 컨테이너 (상단/하단 필드 모두 포함) -->
@@ -1220,6 +1354,23 @@
                                     </div>
                                 </div>
                                 <!-- 흰색 박스 내용 -->
+                            </div>
+
+                            <!-- 흰색 박스 - 일일목표 -->
+                            <div class="white-box-content" id="dailyGoalContent" style="display: none;">
+                                <div class="daily-date-header">
+                                    <button class="daily-date-button" id="dailyDateButton">2025년 1월 6일</button>
+                                </div>
+                                <div class="completion-text">완료도: 0 %</div>
+                                <!-- 일일목표 필드들 컨테이너 -->
+                                <div class="daily-fields-wrapper" id="dailyFieldsWrapper">
+                                    <div class="daily-field-container">
+                                        <div class="daily-checkbox"></div>
+                                        <div class="daily-field-input-area">
+                                            <input type="text" class="daily-field-input" placeholder="오늘의 할 일을 입력해주세요">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <!-- 기간목표 내용 영역 -->
                         </div>
@@ -1978,6 +2129,157 @@
         const actionButton = document.querySelector('.action-button');
         if (actionButton) {
             setupDateButtonClick(actionButton, 'action-button');
+        }
+
+        // 탭 전환 기능
+        const yellowBtn = document.getElementById('yellow-btn');
+        const pinkBtn = document.getElementById('pink-btn');
+        const periodGoalContent = document.getElementById('periodGoalContent');
+        const dailyGoalContent = document.getElementById('dailyGoalContent');
+
+        // 초기 상태: 기간목표 활성화
+        yellowBtn.classList.add('active');
+
+        yellowBtn.addEventListener('click', function() {
+            // 기간목표 표시
+            periodGoalContent.style.display = 'block';
+            dailyGoalContent.style.display = 'none';
+            yellowBtn.classList.add('active');
+            pinkBtn.classList.remove('active');
+        });
+
+        pinkBtn.addEventListener('click', function() {
+            // 일일목표 표시
+            periodGoalContent.style.display = 'none';
+            dailyGoalContent.style.display = 'block';
+            pinkBtn.classList.add('active');
+            yellowBtn.classList.remove('active');
+        });
+
+        // 일일목표 날짜 버튼 - 오늘 날짜로 초기화
+        const dailyDateButton = document.getElementById('dailyDateButton');
+        const today = new Date();
+        const todayStr = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
+        if (dailyDateButton) {
+            dailyDateButton.textContent = todayStr;
+
+            // 날짜 버튼 클릭 시 날짜 선택
+            dailyDateButton.addEventListener('click', function() {
+                currentPickerType = 'daily-date';
+                currentDateElement = this;
+                if (datePickerOverlay) {
+                    datePickerOverlay.classList.add('active');
+                    renderCalendar();
+                }
+            });
+        }
+
+        // 일일목표 필드 생성 함수
+        function createDailyField(afterElement) {
+            const dailyFieldsWrapper = document.getElementById('dailyFieldsWrapper');
+            if (!dailyFieldsWrapper) return null;
+
+            const fieldContainer = document.createElement('div');
+            fieldContainer.className = 'daily-field-container';
+
+            const checkbox = document.createElement('div');
+            checkbox.className = 'daily-checkbox';
+
+            const fieldInputArea = document.createElement('div');
+            fieldInputArea.className = 'daily-field-input-area';
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'daily-field-input';
+            input.placeholder = '오늘의 할 일을 입력해주세요';
+
+            fieldInputArea.appendChild(input);
+            fieldContainer.appendChild(checkbox);
+            fieldContainer.appendChild(fieldInputArea);
+
+            // afterElement 다음에 삽입
+            if (afterElement && afterElement.nextSibling) {
+                dailyFieldsWrapper.insertBefore(fieldContainer, afterElement.nextSibling);
+            } else {
+                dailyFieldsWrapper.appendChild(fieldContainer);
+            }
+
+            // 체크박스 클릭 이벤트
+            checkbox.addEventListener('click', function() {
+                this.classList.toggle('checked');
+                fieldContainer.classList.toggle('completed');
+            });
+
+            // 입력 전 값 저장
+            let previousValue = '';
+
+            input.addEventListener('focus', function() {
+                previousValue = this.value.trim();
+            });
+
+            // 입력 완료 시 새 필드 생성
+            input.addEventListener('blur', function() {
+                const value = this.value.trim();
+                if (value !== '' && previousValue === '') {
+                    createDailyField(fieldContainer);
+                }
+            });
+
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.blur();
+                }
+            });
+
+            // 스와이프 삭제 기능 추가
+            setupSwipeToDelete(fieldContainer, false);
+            fieldContainer.classList.add('swipe-initialized');
+
+            return fieldContainer;
+        }
+
+        // 초기 일일목표 필드에 이벤트 리스너 추가
+        const dailyFieldsWrapper = document.getElementById('dailyFieldsWrapper');
+        if (dailyFieldsWrapper) {
+            const firstDailyField = dailyFieldsWrapper.querySelector('.daily-field-input');
+            const firstDailyContainer = dailyFieldsWrapper.querySelector('.daily-field-container');
+            const firstCheckbox = dailyFieldsWrapper.querySelector('.daily-checkbox');
+
+            if (firstCheckbox) {
+                firstCheckbox.addEventListener('click', function() {
+                    this.classList.toggle('checked');
+                    firstDailyContainer.classList.toggle('completed');
+                });
+            }
+
+            if (firstDailyField) {
+                let firstPreviousValue = '';
+
+                firstDailyField.addEventListener('focus', function() {
+                    firstPreviousValue = this.value.trim();
+                });
+
+                firstDailyField.addEventListener('blur', function() {
+                    const value = this.value.trim();
+                    if (value !== '' && firstPreviousValue === '') {
+                        createDailyField(firstDailyContainer);
+                    }
+                });
+
+                firstDailyField.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.blur();
+                    }
+                });
+            }
+
+            // 초기 필드에 스와이프 기능 적용
+            if (firstDailyContainer) {
+                setupSwipeToDelete(firstDailyContainer, false);
+                firstDailyContainer.classList.add('swipe-initialized');
+            }
         }
 
         // 스와이프 삭제 기능
