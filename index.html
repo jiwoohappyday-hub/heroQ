@@ -382,9 +382,13 @@
         #dailyGoalContent.white-box-content {
             z-index: 55;
             overflow: visible;
-            min-height: auto;
-            height: auto;
-            padding-bottom: 0;
+            padding: 20px;
+        }
+        
+        #dailyGoalContent .inline-calendar {
+            width: 100%;
+            padding: 0;
+            margin-top: 0;
         }
         
         .action-button {
@@ -913,8 +917,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding: 0 20px;
+            margin-bottom: 16px;
+            padding: 0;
+        }
+        
+        #dailyGoalContent .inline-calendar-header {
+            padding: 0;
         }
 
         .inline-calendar-title {
@@ -970,8 +978,13 @@
         .inline-calendar-weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            margin-bottom: 12px;
-            padding: 0 20px;
+            gap: 0;
+            margin-bottom: 8px;
+            padding: 0;
+        }
+        
+        #dailyGoalContent .inline-calendar-weekdays {
+            padding: 0;
         }
         
         /* 주간 달력 모드일 때만 요일 헤더 숨김 */
@@ -982,17 +995,17 @@
         .inline-weekday {
             text-align: center;
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             color: #8b95a1;
-            padding: 8px 0;
+            padding: 4px 0;
         }
         
         .inline-weekday.today {
             background: #FFC0CC;
             color: #191f28;
             border-radius: 8px;
-            padding: 8px 0;
+            padding: 4px 0;
             font-weight: 700;
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
         }
@@ -1001,8 +1014,12 @@
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 0;
-            row-gap: 8px;
-            padding: 0 20px;
+            row-gap: 4px;
+            padding: 0;
+        }
+        
+        #dailyGoalContent .inline-calendar-days {
+            padding: 0;
         }
         
         /* 주간 달력 모드일 때만 flex 레이아웃 적용 */
@@ -1029,7 +1046,15 @@
             transition: all 0.2s;
             aspect-ratio: 1;
             min-height: 40px;
+            width: 40px;
+            height: 40px;
+            margin: 0 auto;
             position: relative;
+        }
+        
+        .inline-day:hover:not(.selected) {
+            background: rgba(255, 52, 89, 0.1);
+            border-radius: 50%;
         }
         
         /* 주간 달력 모드일 때만 원형 스타일 적용 */
@@ -1076,6 +1101,9 @@
             width: 40px;
             height: 40px;
             margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         /* 주간 달력 모드에서 선택된 날짜 강조 */
@@ -1832,6 +1860,7 @@
 
                             <!-- 흰색 박스 - 일일목표 -->
                             <div class="white-box-content" id="dailyGoalContent" style="display: none;">
+                                <div class="completion-text">완료도: 0 %</div>
                                 <!-- 인라인 달력 -->
                                 <div class="inline-calendar" id="inlineCalendar">
                                     <div class="inline-calendar-header">
@@ -1853,7 +1882,6 @@
                                     </div>
                                     <div class="inline-calendar-days" id="inlineCalendarDays"></div>
                                 </div>
-                                <div class="completion-text">완료도: 0 %</div>
                             </div>
                             <!-- 기간목표 내용 영역 -->
                         </div>
@@ -3184,36 +3212,6 @@
             }, 100);
         });
 
-        // 일일목표 날짜 필드 - 오늘 날짜로 초기화
-        const dailyDateField = document.getElementById('dailyDateField');
-        const dailyDateBadge = document.getElementById('dailyDateBadge');
-        const dailyDateText = document.getElementById('dailyDateText');
-        const today = new Date();
-        const todayStr = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
-        const todayBadgeStr = `${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}`;
-
-        if (dailyDateText) {
-            dailyDateText.textContent = todayStr;
-        }
-        if (dailyDateBadge) {
-            dailyDateBadge.textContent = todayBadgeStr;
-        }
-
-        if (dailyDateField) {
-            // 날짜 필드 클릭 시 날짜 선택
-            dailyDateField.addEventListener('click', function() {
-                currentPickerType = 'daily-date';
-                currentDateElement = dailyDateText;
-                // 푸터 숨기기 (기간 선택 모드가 아님)
-                if (datePickerFooter) {
-                    datePickerFooter.classList.remove('active');
-                }
-                if (datePickerOverlay) {
-                    datePickerOverlay.classList.add('active');
-                    renderCalendar();
-                }
-            });
-        }
 
         // 일일목표 필드 생성 함수
         function createDailyField(afterElement) {
