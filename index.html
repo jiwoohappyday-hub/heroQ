@@ -274,7 +274,6 @@
             gap: 12px;
             z-index: 15;
             overflow: hidden;
-            transition: opacity 0.3s ease;
         }
         
         /* 주간 달력 (한 줄 다짐 위치) */
@@ -283,7 +282,7 @@
             top: 28px;
             left: 20px;
             right: 20px;
-            z-index: 15;
+            z-index: 60;
             padding: 0;
         }
         
@@ -378,7 +377,14 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 25;
-            overflow: hidden;
+        }
+        
+        #dailyGoalContent.white-box-content {
+            z-index: 55;
+            overflow: visible;
+            min-height: auto;
+            height: auto;
+            padding-bottom: 0;
         }
         
         .action-button {
@@ -471,31 +477,25 @@
             width: 288px;
             height: 44px;
             background: #FFEBEE;
-            border: 1.5px solid rgba(74, 15, 80, 0.2);
+            border: none;
+            box-shadow: inset 0 0 0 0.5px #4A0F50;
             border-radius: 16px;
             display: flex;
             align-items: center;
-            padding: 0 12px 0 8px;
+            padding: 0 8px;
             gap: 8px;
-            transition: all 0.25s ease;
-            box-shadow: 0 2px 8px rgba(74, 15, 80, 0.06);
+            transition: background 0.2s;
         }
-
-        .field-container:hover {
-            border-color: rgba(74, 15, 80, 0.35);
-            box-shadow: 0 4px 12px rgba(74, 15, 80, 0.1);
-        }
-
+        
         .field-container.completed {
             background: #FFEBEE;
-            border-color: #4A0F50;
         }
         
         .date-badge {
             width: 48px;
             height: 30px;
-            background: linear-gradient(135deg, #FFC0CC 0%, #FFB0BE 100%);
-            border-radius: 10px;
+            background: #FFC0CC;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -504,19 +504,10 @@
             font-size: 12px;
             font-weight: 700;
             color: #c24c4c;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 6px rgba(255, 192, 204, 0.4);
-        }
-
-        .date-badge:hover {
-            transform: scale(1.02);
-            box-shadow: 0 3px 10px rgba(255, 192, 204, 0.5);
         }
 
         .date-badge.date-selected {
             color: #282B30;
-            background: linear-gradient(135deg, #FFD0DA 0%, #FFC0CC 100%);
         }
         
         .field-input-area {
@@ -545,8 +536,6 @@
         
         .field-container:focus-within {
             background: #4A0F50;
-            border-color: #4A0F50;
-            box-shadow: 0 4px 16px rgba(74, 15, 80, 0.25);
         }
         
         .field-container:focus-within .field-input::placeholder {
@@ -666,8 +655,7 @@
 
         .swipe-content {
             position: relative;
-            background: transparent;
-            border-radius: 16px;
+            background: #FFEBEE;
             transition: transform 0.1s ease-out;
             will-change: transform;
             -webkit-backface-visibility: hidden;
@@ -734,8 +722,8 @@
         .bottom-date-badge {
             width: 48px;
             height: 1.875rem;
-            background: linear-gradient(135deg, #F0F0F0 0%, #E8E8E8 100%);
-            border-radius: 10px;
+            background: #E8E8E8;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -743,22 +731,15 @@
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: 12px;
             font-weight: 700;
-            color: #a0a0a0;
+            color: #c1c1c1;
             position: relative;
             cursor: pointer;
-            transition: all 0.25s ease;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-        }
-
-        .bottom-date-badge:hover {
-            transform: scale(1.02);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: background 0.2s, color 0.2s;
         }
 
         .bottom-date-badge.date-selected {
             color: #282B30;
-            background: linear-gradient(135deg, #FFD0DA 0%, #FFC0CC 100%);
-            box-shadow: 0 2px 6px rgba(255, 192, 204, 0.4);
+            background: #FFC0CC;
         }
 
         /* 상단-하단 필드 연결선 */
@@ -778,25 +759,19 @@
             width: 13.79981rem;
             height: 1.875rem;
             border-radius: 0.75rem;
-            border: 1.5px solid rgba(74, 15, 80, 0.2);
+            border: none;
+            box-shadow: inset 0 0 0 0.5px #4A0F50;
             background: #FFF;
             display: flex;
             align-items: center;
             padding: 0 12px;
             flex-shrink: 0;
-            transition: all 0.25s ease;
-            box-shadow: 0 2px 6px rgba(74, 15, 80, 0.05);
-        }
-
-        .bottom-date-side-field:hover {
-            border-color: rgba(74, 15, 80, 0.35);
-            box-shadow: 0 3px 10px rgba(74, 15, 80, 0.08);
+            transition: border-color 0.2s;
         }
 
         .bottom-field-container:focus-within .bottom-date-side-field {
             border-color: #4A0F50;
             background: #4A0F50;
-            box-shadow: 0 4px 12px rgba(74, 15, 80, 0.2);
         }
         
         .bottom-field-container:focus-within .bottom-field-input {
@@ -913,7 +888,7 @@
         /* 인라인 달력 스타일 */
         .inline-calendar {
             width: 100%;
-            padding: 0;
+            padding: 20px 0;
             margin-bottom: 0;
         }
         
@@ -929,23 +904,33 @@
             padding: 0 4px;
         }
         
-        .white-box-content {
-            padding-top: 0;
+        #dailyGoalContent.white-box-content {
+            overflow: visible;
+            padding: 20px;
         }
 
         .inline-calendar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
-            padding: 0 4px;
+            margin-bottom: 20px;
+            padding: 0 20px;
         }
 
         .inline-calendar-title {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 16px;
+            font-size: 12px;
             font-weight: 700;
-            color: #191f28;
+            color: #000000;
+            background: #ffc0cc;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+        
+        #inlineMonthYear {
+            background: #ffc0cc;
+            padding: 6px 12px;
+            border-radius: 20px;
         }
         
         .inline-week-display {
@@ -983,28 +968,31 @@
         }
 
         .inline-calendar-weekdays {
-            display: none; /* 주간 달력에서는 요일 헤더 숨김 */
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            margin-bottom: 12px;
+            padding: 0 20px;
         }
         
-        /* 주간 달력 모드일 때만 적용 */
-        .swipe-up-panel:not(.collapsed) .inline-calendar-weekdays {
+        /* 주간 달력 모드일 때만 요일 헤더 숨김 */
+        .inline-calendar.week-calendar .inline-calendar-weekdays {
             display: none;
         }
 
         .inline-weekday {
             text-align: center;
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
             color: #8b95a1;
-            padding: 4px 0;
+            padding: 8px 0;
         }
         
         .inline-weekday.today {
             background: #FFC0CC;
             color: #191f28;
             border-radius: 8px;
-            padding: 4px 0;
+            padding: 8px 0;
             font-weight: 700;
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
         }
@@ -1012,7 +1000,9 @@
         .inline-calendar-days {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 2px;
+            gap: 0;
+            row-gap: 8px;
+            padding: 0 20px;
         }
         
         /* 주간 달력 모드일 때만 flex 레이아웃 적용 */
@@ -1025,23 +1015,21 @@
         }
 
         .inline-day {
-            aspect-ratio: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #ffffff;
-            border: 2px solid #FF9BAD;
-            border-radius: 50%;
+            background: transparent;
+            border: none;
+            border-radius: 0;
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: 16px;
-            font-weight: 600;
-            color: #FF9BAD;
+            font-weight: 400;
+            color: #191f28;
             cursor: pointer;
             transition: all 0.2s;
-            min-width: 44px;
-            min-height: 44px;
-            width: 44px;
-            height: 44px;
+            aspect-ratio: 1;
+            min-height: 40px;
+            position: relative;
         }
         
         /* 주간 달력 모드일 때만 원형 스타일 적용 */
@@ -1055,18 +1043,16 @@
             height: 44px;
         }
 
-        .inline-day:hover {
-            background: rgba(255, 155, 173, 0.1);
+        .inline-day:hover:not(.selected) {
+            background: rgba(255, 52, 89, 0.1);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin: 0 auto;
         }
         
         .inline-calendar.week-calendar .inline-day:hover {
             background: rgba(255, 155, 173, 0.1);
-        }
-
-        .inline-day.today {
-            background: #FFE0E6;
-            color: #FF3459;
-            font-weight: 700;
         }
         
         /* 주간 달력 모드에서 오늘 날짜 스타일 */
@@ -1076,19 +1062,28 @@
             color: #FF9BAD;
         }
 
+        .inline-day.today {
+            background: transparent;
+            color: #191f28;
+            font-weight: 400;
+        }
+
         .inline-day.selected {
-            background: #FF9BAD;
+            background: #FF3459;
             color: #ffffff;
             font-weight: 700;
-            border-color: #FF9BAD;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin: 0 auto;
         }
         
         /* 주간 달력 모드에서 선택된 날짜 강조 */
         .inline-calendar.week-calendar .inline-day.selected {
-            background: #FF9BAD;
+            background: #FF3459;
             color: #ffffff;
-            border-color: #FF9BAD;
-            box-shadow: 0 2px 8px rgba(255, 155, 173, 0.3);
+            border-color: #FF3459;
+            box-shadow: 0 2px 8px rgba(255, 52, 89, 0.3);
         }
 
         .inline-day.other-month {
@@ -1097,33 +1092,34 @@
 
         .inline-day-empty {
             aspect-ratio: 1;
+            min-height: 40px;
         }
 
         /* 스와이프 업 패널 */
         .swipe-up-panel {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            position: fixed;
+            bottom: calc(60px + env(safe-area-inset-bottom));
+            left: 50%;
+            transform: translateX(-50%);
+            width: 340px;
             background: #ffffff;
             border-radius: 20px 20px 0 0;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
-            transform: translateY(0);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
             transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             z-index: 50;
-            height: 75%;
-            min-height: 400px;
+            height: 400px;
+            max-height: calc(100vh - 120px);
             overflow: hidden;
         }
         
         .swipe-up-panel:not(.collapsed) {
-            height: 80%;
-            min-height: 450px;
+            height: 500px;
+            max-height: calc(100vh - 120px);
             background: #ffffff;
         }
 
         .swipe-up-panel.collapsed {
-            transform: translateY(calc(100% - 60px));
+            transform: translateX(-50%) translateY(calc(100% - 60px));
         }
 
         .swipe-up-handle {
@@ -1137,7 +1133,7 @@
 
         .swipe-up-content {
             padding: 0 20px 20px;
-            max-height: calc(85vh - 60px);
+            height: 100%;
             overflow-y: auto;
             background: #ffffff;
             border-radius: 20px 20px 0 0;
@@ -1173,7 +1169,7 @@
             border-radius: 16px;
             display: flex;
             align-items: center;
-            padding: 0 12px;
+            padding: 0 12px 0 8px;
             gap: 12px;
             transition: all 0.25s ease;
             box-shadow: 0 2px 8px rgba(74, 15, 80, 0.06);
@@ -1836,32 +1832,28 @@
 
                             <!-- 흰색 박스 - 일일목표 -->
                             <div class="white-box-content" id="dailyGoalContent" style="display: none;">
-                                <!-- 인라인 달력 (주간 달력 모드일 때만 표시) -->
-                                <div class="inline-calendar week-calendar" id="inlineCalendar" style="display: none;">
+                                <!-- 인라인 달력 -->
+                                <div class="inline-calendar" id="inlineCalendar">
                                     <div class="inline-calendar-header">
-                                        <button class="inline-calendar-nav" id="inlinePrevWeek">‹</button>
-                                        <div class="inline-calendar-title inline-week-display" id="inlineWeekDisplay">1월 1주</div>
-                                        <button class="inline-calendar-nav" id="inlineNextWeek">›</button>
+                                        <button class="inline-calendar-nav" id="inlinePrevMonth">‹</button>
+                                        <button class="inline-calendar-nav" id="inlinePrevWeek" style="display: none;">‹</button>
+                                        <div class="inline-calendar-title" id="inlineMonthYear">2025년 1월</div>
+                                        <div class="inline-calendar-title" id="inlineWeekDisplay" style="display: none;">1월 1주</div>
+                                        <button class="inline-calendar-nav" id="inlineNextMonth">›</button>
+                                        <button class="inline-calendar-nav" id="inlineNextWeek" style="display: none;">›</button>
+                                    </div>
+                                    <div class="inline-calendar-weekdays">
+                                        <div class="inline-weekday">일</div>
+                                        <div class="inline-weekday">월</div>
+                                        <div class="inline-weekday">화</div>
+                                        <div class="inline-weekday">수</div>
+                                        <div class="inline-weekday">목</div>
+                                        <div class="inline-weekday">금</div>
+                                        <div class="inline-weekday">토</div>
                                     </div>
                                     <div class="inline-calendar-days" id="inlineCalendarDays"></div>
                                 </div>
-
-                                <!-- 스와이프 업 할일 패널 -->
-                                <div class="swipe-up-panel" id="swipeUpPanel">
-                                    <div class="swipe-up-handle"></div>
-                                    <div class="swipe-up-content">
-                                        <div class="swipe-up-title" id="swipeUpTitle">오늘의 할 일</div>
-                                        <!-- 일일목표 필드들 컨테이너 -->
-                                        <div class="daily-fields-wrapper" id="dailyFieldsWrapper">
-                                            <div class="daily-field-container">
-                                                <div class="daily-checkbox"></div>
-                                                <div class="daily-field-input-area">
-                                                    <input type="text" class="daily-field-input" placeholder="오늘의 할 일을 입력해주세요">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <div class="completion-text">완료도: 0 %</div>
                             </div>
                             <!-- 기간목표 내용 영역 -->
                         </div>
@@ -1869,6 +1861,24 @@
                 </div>
             </div>
         </main>
+
+        <!-- 스와이프 업 할일 패널 (일일목표용, 카드 밖으로 분리) -->
+        <div class="swipe-up-panel" id="swipeUpPanel" style="display: none;">
+            <div class="swipe-up-handle"></div>
+            <div class="swipe-up-content">
+                <div class="swipe-up-title" id="swipeUpTitle">오늘의 할 일</div>
+                <!-- 일일목표 필드들 컨테이너 -->
+                <div class="daily-fields-wrapper" id="dailyFieldsWrapper">
+                    <div class="daily-field-container">
+                        <div class="daily-date-badge" id="dailyDateBadgeInField">00/00</div>
+                        <div class="daily-checkbox"></div>
+                        <div class="daily-field-input-area">
+                            <input type="text" class="daily-field-input" placeholder="오늘의 할 일을 입력해주세요">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- 하단 네비게이션 -->
         <nav class="bottom-nav">
@@ -2962,6 +2972,18 @@
             const dailyFieldsWrapper = document.getElementById('dailyFieldsWrapper');
             if (!dailyFieldsWrapper) return;
             
+            // 날짜 뱃지 업데이트
+            const [y, m, d] = dateStr.split('-');
+            const dateBadge = document.getElementById('dailyDateBadgeInField');
+            if (dateBadge) {
+                dateBadge.textContent = `${m}/${d}`;
+            }
+            // 모든 필드의 날짜 뱃지 업데이트
+            const allDateBadges = dailyFieldsWrapper.querySelectorAll('.daily-date-badge');
+            allDateBadges.forEach(badge => {
+                badge.textContent = `${m}/${d}`;
+            });
+            
             // 기존 필드들 제거 (첫 번째 필드 제외)
             const existingFields = dailyFieldsWrapper.querySelectorAll('.daily-field-container');
             for (let i = 1; i < existingFields.length; i++) {
@@ -3107,6 +3129,12 @@
             if (goalCardContent) {
                 goalCardContent.style.background = '#4A0F50';
             }
+            
+            // 패널 숨김
+            const swipeUpPanel = document.getElementById('swipeUpPanel');
+            if (swipeUpPanel) {
+                swipeUpPanel.style.display = 'none';
+            }
         });
 
         pinkBtn.addEventListener('click', function() {
@@ -3119,6 +3147,41 @@
             if (goalCardContent) {
                 goalCardContent.style.background = '#FF9BAD';
             }
+            
+            // 패널 표시
+            const swipeUpPanel = document.getElementById('swipeUpPanel');
+            if (swipeUpPanel) {
+                swipeUpPanel.style.display = 'block';
+                swipeUpPanel.classList.add('collapsed');
+            }
+            
+            // 달력 렌더링
+            renderInlineCalendar();
+            
+            // 오늘 날짜 자동 선택 및 데이터 불러오기
+            setTimeout(() => {
+                const today = new Date();
+                const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+                inlineSelectedDate = todayStr;
+
+                // 오늘 날짜에 selected 클래스 추가
+                const todayDay = inlineCalendarDays.querySelector(`[data-date="${todayStr}"]`);
+                if (todayDay) {
+                    // 이전 선택 제거
+                    inlineCalendarDays.querySelectorAll('.inline-day').forEach(d => d.classList.remove('selected'));
+                    // 새 선택
+                    todayDay.classList.add('selected');
+
+                    // 스와이프 업 패널 타이틀 업데이트
+                    const [y, m, d] = todayStr.split('-');
+                    if (swipeUpTitle) {
+                        swipeUpTitle.textContent = `${parseInt(m)}월 ${parseInt(d)}일의 할 일`;
+                    }
+
+                    // 해당 날짜의 기간목표 데이터 불러오기
+                    loadDailyFieldsForDate(todayStr);
+                }
+            }, 100);
         });
 
         // 일일목표 날짜 필드 - 오늘 날짜로 초기화
@@ -3160,6 +3223,10 @@
             const fieldContainer = document.createElement('div');
             fieldContainer.className = 'daily-field-container';
 
+            const dateBadge = document.createElement('div');
+            dateBadge.className = 'daily-date-badge';
+            dateBadge.textContent = '00/00';
+
             const checkbox = document.createElement('div');
             checkbox.className = 'daily-checkbox';
 
@@ -3172,6 +3239,7 @@
             input.placeholder = '오늘의 할 일을 입력해주세요';
 
             fieldInputArea.appendChild(input);
+            fieldContainer.appendChild(dateBadge);
             fieldContainer.appendChild(checkbox);
             fieldContainer.appendChild(fieldInputArea);
 
@@ -3476,75 +3544,17 @@
 
             return `${month}월 ${weekNumber}째주`;
         }
-
-        // goal-card 안의 주간 달력 렌더링
-        function renderWeekCalendarInGoalCard() {
-            const weekCalendarGoal = document.getElementById('weekCalendarInGoalCard');
-            if (!weekCalendarGoal) return;
-
-            const calendarDays = weekCalendarGoal.querySelector('.inline-calendar-days');
-            const weekDisplay = weekCalendarGoal.querySelector('.inline-calendar-title');
-            if (!calendarDays) return;
-
-            const today = new Date();
-
-            // 현재 주의 시작일 계산
-            if (!inlineCurrentWeekStart) {
-                inlineCurrentWeekStart = getWeekStart(inlineSelectedDate ? new Date(inlineSelectedDate) : today);
-            }
-
-            // 주 표시 업데이트
-            if (weekDisplay) {
-                weekDisplay.textContent = getWeekDisplayText(inlineCurrentWeekStart);
-            }
-
-            calendarDays.innerHTML = '';
-
-            // 현재 주의 7일 표시
-            for (let i = 0; i < 7; i++) {
-                const currentDay = new Date(inlineCurrentWeekStart);
-                currentDay.setDate(inlineCurrentWeekStart.getDate() + i);
-
-                const day = document.createElement('button');
-                day.className = 'inline-day';
-                day.textContent = currentDay.getDate();
-
-                const year = currentDay.getFullYear();
-                const month = currentDay.getMonth() + 1;
-                const date = currentDay.getDate();
-                const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
-                day.dataset.date = dateStr;
-
-                if (year === today.getFullYear() && month === today.getMonth() + 1 && date === today.getDate()) {
-                    day.classList.add('today');
-                }
-
-                if (inlineSelectedDate === dateStr) {
-                    day.classList.add('selected');
-                }
-
-                day.addEventListener('click', function() {
-                    calendarDays.querySelectorAll('.inline-day').forEach(d => d.classList.remove('selected'));
-                    this.classList.add('selected');
-                    inlineSelectedDate = this.dataset.date;
-
-                    const [y, m, d] = inlineSelectedDate.split('-');
-                    if (swipeUpTitle) {
-                        swipeUpTitle.textContent = `${parseInt(m)}월 ${parseInt(d)}일의 할 일`;
-                    }
-
-                    loadDailyFieldsForDate(inlineSelectedDate);
-                });
-
-                calendarDays.appendChild(day);
-            }
-        }
-
+        
         // 주 단위 달력 렌더링
         function renderWeekCalendar() {
             if (!inlineCalendarDays) return;
 
             const today = new Date();
+            
+            // week-calendar 클래스 추가
+            if (inlineCalendar) {
+                inlineCalendar.classList.add('week-calendar');
+            }
             
             // 현재 주의 시작일 계산
             if (!inlineCurrentWeekStart) {
@@ -3637,12 +3647,83 @@
             }
         }
 
+        // goal-card 안의 주간 달력 렌더링
+        function renderWeekCalendarInGoalCard() {
+            const inlineCalendarDaysGoal = document.getElementById('inlineCalendarDaysGoal');
+            const inlineWeekDisplayGoal = document.getElementById('inlineWeekDisplayGoal');
+            if (!inlineCalendarDaysGoal) return;
+
+            const today = new Date();
+            
+            // 현재 주의 시작일 계산
+            if (!inlineCurrentWeekStart) {
+                inlineCurrentWeekStart = getWeekStart(inlineSelectedDate ? new Date(inlineSelectedDate) : today);
+            }
+            
+            // 주 표시 업데이트
+            if (inlineWeekDisplayGoal) {
+                inlineWeekDisplayGoal.textContent = getWeekDisplayText(inlineCurrentWeekStart);
+            }
+
+            inlineCalendarDaysGoal.innerHTML = '';
+
+            // 현재 주의 7일 표시 (일요일부터 토요일까지)
+            for (let i = 0; i < 7; i++) {
+                const currentDay = new Date(inlineCurrentWeekStart);
+                currentDay.setDate(inlineCurrentWeekStart.getDate() + i);
+                
+                const day = document.createElement('button');
+                day.className = 'inline-day';
+                day.textContent = currentDay.getDate();
+
+                const year = currentDay.getFullYear();
+                const month = currentDay.getMonth() + 1;
+                const date = currentDay.getDate();
+                const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
+                day.dataset.date = dateStr;
+
+                // 오늘 표시
+                if (year === today.getFullYear() && month === today.getMonth() + 1 && date === today.getDate()) {
+                    day.classList.add('today');
+                }
+
+                // 선택된 날짜 표시
+                if (inlineSelectedDate === dateStr) {
+                    day.classList.add('selected');
+                }
+
+                day.addEventListener('click', function() {
+                    // 이전 선택 제거
+                    inlineCalendarDaysGoal.querySelectorAll('.inline-day').forEach(d => d.classList.remove('selected'));
+                    // 새 선택
+                    this.classList.add('selected');
+                    inlineSelectedDate = this.dataset.date;
+
+                    // 스와이프 업 패널 타이틀 업데이트
+                    const [y, m, d] = inlineSelectedDate.split('-');
+                    if (swipeUpTitle) {
+                        swipeUpTitle.textContent = `${parseInt(m)}월 ${parseInt(d)}일의 할 일`;
+                    }
+
+                    // 해당 날짜의 기간목표 데이터 불러오기
+                    loadDailyFieldsForDate(inlineSelectedDate);
+                });
+
+                inlineCalendarDaysGoal.appendChild(day);
+            }
+        }
+
         function renderInlineCalendar() {
             if (!inlineCalendarDays) return;
 
             const year = inlineCurrentDate.getFullYear();
             const month = inlineCurrentDate.getMonth();
             const today = new Date();
+
+            // week-calendar 클래스 제거
+            if (inlineCalendar) {
+                inlineCalendar.classList.remove('week-calendar');
+            }
 
             if (inlineMonthYear) {
                 inlineMonthYear.textContent = `${year}년 ${month + 1}월`;
@@ -3723,15 +3804,14 @@
 
                     // 해당 날짜의 기간목표 데이터 불러오기
                     loadDailyFieldsForDate(inlineSelectedDate);
-
-                    // 이미 확장 상태에서 주간 달력 날짜 클릭 - 패널 상태 유지
+                    
+                    // 패널이 이미 확장되어 있으면 주간 달력 업데이트
                     const swipeUpPanel = document.getElementById('swipeUpPanel');
-                    if (swipeUpPanel && swipeUpPanel.classList.contains('collapsed')) {
-                        swipeUpPanel.classList.remove('collapsed');
+                    if (swipeUpPanel && !swipeUpPanel.classList.contains('collapsed')) {
+                        // 이미 확장 상태에서 날짜 클릭 - 주간 달력 업데이트 (선택된 날짜 반영)
+                        inlineCurrentWeekStart = getWeekStart(new Date(inlineSelectedDate));
+                        renderWeekCalendarInGoalCard();
                     }
-                    // 주간 달력 유지 (선택된 날짜 반영)
-                    inlineCurrentWeekStart = getWeekStart(new Date(inlineSelectedDate));
-                    renderWeekCalendar();
                 });
 
                 inlineCalendarDays.appendChild(day);
@@ -3793,7 +3873,7 @@
                 }
             });
         }
-
+        
         // 달력 영역 좌우 스와이프 (주간 달력 모드에서 주 이동)
         if (inlineCalendarDays) {
             let calendarTouchStartX = 0;
@@ -3915,12 +3995,15 @@
             // 현재 translateY 값 가져오기
             function getCurrentTranslateY() {
                 const style = window.getComputedStyle(swipeUpPanel);
-                const matrix = new DOMMatrix(style.transform);
+                const transform = style.transform;
+                if (!transform || transform === 'none') return 0;
+                const matrix = new DOMMatrix(transform);
                 return matrix.m42;
             }
 
             // 패널 높이에서 60px 뺀 값 (collapsed 상태의 translateY)
             function getCollapsedTranslateY() {
+                // 패널이 하단 네비게이션 위에 있으므로, 패널 높이에서 60px(핸들 높이)만 빼면 됨
                 return swipeUpPanel.offsetHeight - 60;
             }
 
@@ -3961,7 +4044,7 @@
                 const maxTranslateY = getCollapsedTranslateY();
                 newTranslateY = Math.max(0, Math.min(newTranslateY, maxTranslateY));
 
-                swipeUpPanel.style.transform = `translateY(${newTranslateY}px)`;
+                swipeUpPanel.style.transform = `translateX(-50%) translateY(${newTranslateY}px)`;
             }, { passive: false });
 
             swipeUpPanel.addEventListener('touchend', function(e) {
@@ -3980,11 +4063,9 @@
                 // 빠른 스와이프면 threshold를 낮춤
                 if (currentY < threshold) {
                     // 확장 (패널이 올라옴) → 주간 달력으로 변경
-                    swipeUpPanel.style.transform = 'translateY(0)';
+                    swipeUpPanel.style.transform = 'translateX(-50%) translateY(0)';
                     swipeUpPanel.classList.remove('collapsed');
                     // 한 줄 다짐 숨기고 주간 달력 표시
-                    const goalTextWrapper = document.getElementById('goalTextWrapper');
-                    const weekCalendarGoal = document.getElementById('weekCalendarInGoalCard');
                     if (goalTextWrapper) {
                         goalTextWrapper.style.display = 'none';
                     }
@@ -4004,11 +4085,9 @@
                     renderWeekCalendarInGoalCard();
                 } else {
                     // 축소 (패널이 내려감) → 월간 달력으로 변경
-                    swipeUpPanel.style.transform = `translateY(${collapsedY}px)`;
+                    swipeUpPanel.style.transform = `translateX(-50%) translateY(${collapsedY}px)`;
                     swipeUpPanel.classList.add('collapsed');
                     // 한 줄 다짐 표시하고 주간 달력 숨김
-                    const goalTextWrapper = document.getElementById('goalTextWrapper');
-                    const weekCalendarGoal = document.getElementById('weekCalendarInGoalCard');
                     if (goalTextWrapper) {
                         goalTextWrapper.style.display = 'flex';
                     }
@@ -4031,8 +4110,6 @@
                 swipeUpPanel.classList.toggle('collapsed');
 
                 // 달력 모드 전환
-                const goalTextWrapper = document.getElementById('goalTextWrapper');
-                const weekCalendarGoal = document.getElementById('weekCalendarInGoalCard');
                 const weekCalendar = document.getElementById('inlineCalendar');
                 
                 if (wasCollapsed) {
