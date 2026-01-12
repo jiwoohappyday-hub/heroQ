@@ -3667,6 +3667,7 @@
         let inlineCurrentDate = new Date();
         let inlineSelectedDate = null;
         let inlineCurrentWeekStart = null; // 현재 주의 시작일
+        let inlineDisplayMonth = null; // 현재 표시 중인 월
         const inlineCalendarDays = document.getElementById('inlineCalendarDays');
         const inlineMonthYear = document.getElementById('inlineMonthYear');
         const inlineWeekDisplay = document.getElementById('inlineWeekDisplay');
@@ -3734,7 +3735,26 @@
 
             return `${month}월 ${weekNumber}째주`;
         }
-        
+
+        // 특정 월 기준으로 주 표시 텍스트 생성
+        function getWeekDisplayTextForMonth(weekStart, displayMonth) {
+            // 해당 월의 1일이 속한 주의 시작일 찾기
+            const year = weekStart.getFullYear();
+            const adjustedYear = displayMonth === 1 && weekStart.getMonth() === 11 ? year + 1 : year;
+            const firstDayOfMonth = new Date(adjustedYear, displayMonth - 1, 1);
+            const firstWeekStart = getWeekStart(firstDayOfMonth);
+
+            // 주 번호 계산
+            const weekDiff = Math.floor((weekStart - firstWeekStart) / (7 * 24 * 60 * 60 * 1000));
+            const weekNumber = weekDiff + 1;
+
+            if (weekNumber <= 0) {
+                return `${displayMonth}월 1째주`;
+            }
+
+            return `${displayMonth}월 ${weekNumber}째주`;
+        }
+
         // 주 단위 달력 렌더링
         function renderWeekCalendar() {
             if (!inlineCalendarDays) return;
@@ -3750,10 +3770,16 @@
             if (!inlineCurrentWeekStart) {
                 inlineCurrentWeekStart = getWeekStart(inlineSelectedDate ? new Date(inlineSelectedDate) : today);
             }
-            
+
+            // 표시할 월 초기화 (설정 안 됐으면 선택된 날짜의 월 사용)
+            if (!inlineDisplayMonth) {
+                const selectedDate = inlineSelectedDate ? new Date(inlineSelectedDate) : today;
+                inlineDisplayMonth = selectedDate.getMonth() + 1;
+            }
+
             // 주 표시 업데이트 및 헤더 전환
             if (inlineWeekDisplay) {
-                inlineWeekDisplay.textContent = getWeekDisplayText(inlineCurrentWeekStart);
+                inlineWeekDisplay.textContent = getWeekDisplayTextForMonth(inlineCurrentWeekStart, inlineDisplayMonth);
                 inlineWeekDisplay.style.display = 'block';
                 inlineWeekDisplay.classList.add('inline-week-display');
             }
@@ -3782,9 +3808,8 @@
 
             inlineCalendarDays.innerHTML = '';
 
-            // 현재 주차의 대상 월 결정
-            const weekText = getWeekDisplayText(inlineCurrentWeekStart);
-            const targetMonth = parseInt(weekText.match(/(\d+)월/)[1]);
+            // 표시할 월
+            const targetMonth = inlineDisplayMonth;
 
             // 현재 주의 7일 표시 (일요일부터 토요일까지)
             for (let i = 0; i < 7; i++) {
@@ -3913,17 +3938,22 @@
             if (!inlineCurrentWeekStart) {
                 inlineCurrentWeekStart = getWeekStart(inlineSelectedDate ? new Date(inlineSelectedDate) : today);
             }
-            
+
+            // 표시할 월 초기화 (설정 안 됐으면 선택된 날짜의 월 사용)
+            if (!inlineDisplayMonth) {
+                const selectedDate = inlineSelectedDate ? new Date(inlineSelectedDate) : today;
+                inlineDisplayMonth = selectedDate.getMonth() + 1;
+            }
+
             // 주 표시 업데이트
             if (inlineWeekDisplayGoal) {
-                inlineWeekDisplayGoal.textContent = getWeekDisplayText(inlineCurrentWeekStart);
+                inlineWeekDisplayGoal.textContent = getWeekDisplayTextForMonth(inlineCurrentWeekStart, inlineDisplayMonth);
             }
 
             inlineCalendarDaysGoal.innerHTML = '';
 
-            // 현재 주차의 대상 월 결정
-            const weekText = getWeekDisplayText(inlineCurrentWeekStart);
-            const targetMonth = parseInt(weekText.match(/(\d+)월/)[1]);
+            // 표시할 월
+            const targetMonth = inlineDisplayMonth;
 
             // 현재 주의 7일 표시 (일요일부터 토요일까지)
             for (let i = 0; i < 7; i++) {
@@ -4187,8 +4217,27 @@
         // 주 네비게이션
         if (inlinePrevWeek) {
             inlinePrevWeek.addEventListener('click', function() {
-                if (inlineCurrentWeekStart) {
-                    inlineCurrentWeekStart.setDate(inlineCurrentWeekStart.getDate() - 7);
+                if (inlineCurrentWeekStart && inlineDisplayMonth) {
+                    // 현재 주에 이전 달 날짜가 있는지 확인
+                    let hasPrevMonthDays = false;
+                    for (let i = 0; i < 7; i++) {
+                        const d = new Date(inlineCurrentWeekStart);
+                        d.setDate(d.getDate() + i);
+                        const m = d.getMonth() + 1;
+                        if (m === (inlineDisplayMonth === 1 ? 12 : inlineDisplayMonth - 1)) {
+                            hasPrevMonthDays = true;
+                            break;
+                        }
+                    }
+
+                    if (hasPrevMonthDays) {
+                        inlineDisplayMonth = inlineDisplayMonth === 1 ? 12 : inlineDisplayMonth - 1;
+                    } else {
+                        inlineCurrentWeekStart.setDate(inlineCurrentWeekStart.getDate() - 7);
+                        const lastDayOfWeek = new Date(inlineCurrentWeekStart);
+                        lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
+                        inlineDisplayMonth = lastDayOfWeek.getMonth() + 1;
+                    }
                     renderWeekCalendar();
                 }
             });
@@ -4196,8 +4245,26 @@
 
         if (inlineNextWeek) {
             inlineNextWeek.addEventListener('click', function() {
-                if (inlineCurrentWeekStart) {
-                    inlineCurrentWeekStart.setDate(inlineCurrentWeekStart.getDate() + 7);
+                if (inlineCurrentWeekStart && inlineDisplayMonth) {
+                    // 현재 주에 다음 달 날짜가 있는지 확인
+                    let hasNextMonthDays = false;
+                    for (let i = 0; i < 7; i++) {
+                        const d = new Date(inlineCurrentWeekStart);
+                        d.setDate(d.getDate() + i);
+                        const m = d.getMonth() + 1;
+                        if (m === (inlineDisplayMonth === 12 ? 1 : inlineDisplayMonth + 1)) {
+                            hasNextMonthDays = true;
+                            break;
+                        }
+                    }
+
+                    if (hasNextMonthDays) {
+                        inlineDisplayMonth = inlineDisplayMonth === 12 ? 1 : inlineDisplayMonth + 1;
+                    } else {
+                        inlineCurrentWeekStart.setDate(inlineCurrentWeekStart.getDate() + 7);
+                        const firstDayOfWeek = new Date(inlineCurrentWeekStart);
+                        inlineDisplayMonth = firstDayOfWeek.getMonth() + 1;
+                    }
                     renderWeekCalendar();
                 }
             });
@@ -4209,8 +4276,30 @@
         
         if (inlinePrevWeekGoal) {
             inlinePrevWeekGoal.addEventListener('click', function() {
-                if (inlineCurrentWeekStart) {
-                    inlineCurrentWeekStart.setDate(inlineCurrentWeekStart.getDate() - 7);
+                if (inlineCurrentWeekStart && inlineDisplayMonth) {
+                    // 현재 주에 이전 달 날짜가 있는지 확인
+                    let hasPrevMonthDays = false;
+                    for (let i = 0; i < 7; i++) {
+                        const d = new Date(inlineCurrentWeekStart);
+                        d.setDate(d.getDate() + i);
+                        const m = d.getMonth() + 1;
+                        if (m === (inlineDisplayMonth === 1 ? 12 : inlineDisplayMonth - 1)) {
+                            hasPrevMonthDays = true;
+                            break;
+                        }
+                    }
+
+                    if (hasPrevMonthDays) {
+                        // 이전 달로 월 변경
+                        inlineDisplayMonth = inlineDisplayMonth === 1 ? 12 : inlineDisplayMonth - 1;
+                    } else {
+                        // 이전 주로 이동
+                        inlineCurrentWeekStart.setDate(inlineCurrentWeekStart.getDate() - 7);
+                        // 새 주에서 표시할 월 결정
+                        const lastDayOfWeek = new Date(inlineCurrentWeekStart);
+                        lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
+                        inlineDisplayMonth = lastDayOfWeek.getMonth() + 1;
+                    }
                     renderWeekCalendarInGoalCard();
                 }
             });
@@ -4218,8 +4307,29 @@
 
         if (inlineNextWeekGoal) {
             inlineNextWeekGoal.addEventListener('click', function() {
-                if (inlineCurrentWeekStart) {
-                    inlineCurrentWeekStart.setDate(inlineCurrentWeekStart.getDate() + 7);
+                if (inlineCurrentWeekStart && inlineDisplayMonth) {
+                    // 현재 주에 다음 달 날짜가 있는지 확인
+                    let hasNextMonthDays = false;
+                    for (let i = 0; i < 7; i++) {
+                        const d = new Date(inlineCurrentWeekStart);
+                        d.setDate(d.getDate() + i);
+                        const m = d.getMonth() + 1;
+                        if (m === (inlineDisplayMonth === 12 ? 1 : inlineDisplayMonth + 1)) {
+                            hasNextMonthDays = true;
+                            break;
+                        }
+                    }
+
+                    if (hasNextMonthDays) {
+                        // 다음 달로 월 변경
+                        inlineDisplayMonth = inlineDisplayMonth === 12 ? 1 : inlineDisplayMonth + 1;
+                    } else {
+                        // 다음 주로 이동
+                        inlineCurrentWeekStart.setDate(inlineCurrentWeekStart.getDate() + 7);
+                        // 새 주에서 표시할 월 결정
+                        const firstDayOfWeek = new Date(inlineCurrentWeekStart);
+                        inlineDisplayMonth = firstDayOfWeek.getMonth() + 1;
+                    }
                     renderWeekCalendarInGoalCard();
                 }
             });
