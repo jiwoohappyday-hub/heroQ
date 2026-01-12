@@ -219,7 +219,7 @@
             overflow: visible;
             background: transparent;
             box-shadow: none;
-            margin-top: 10px;
+            margin-top: 30px;
             transition: none;
         }
         
@@ -466,7 +466,7 @@
         #dailyGoalContent .inline-calendar {
             width: 100%;
             padding: 0;
-            margin-top: 0;
+            margin-top: 25px;
             position: relative;
             z-index: 1;
         }
@@ -1052,7 +1052,7 @@
             background: none;
             border: none;
             font-size: 24px;
-            color: #FF9BAD;
+            color: #000000;
             cursor: pointer;
             padding: 4px 8px;
             border-radius: 8px;
@@ -1232,14 +1232,14 @@
             box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
             transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             z-index: 50;
-            height: 400px;
-            max-height: calc(100vh - 120px);
+            height: 320px;
+            max-height: calc(100vh - 200px);
             overflow: hidden;
         }
-        
+
         .swipe-up-panel:not(.collapsed) {
-            height: 500px;
-            max-height: calc(100vh - 120px);
+            height: 452px;
+            max-height: calc(100vh - 200px);
             background: #ffffff;
         }
 
@@ -3273,6 +3273,9 @@
         const periodGoalContent = document.getElementById('periodGoalContent');
         const dailyGoalContent = document.getElementById('dailyGoalContent');
 
+        // 패널 확장 상태 저장 변수
+        let panelWasExpanded = false;
+
         // 초기 상태: 기간목표 활성화
         yellowBtn.classList.add('active');
 
@@ -3280,6 +3283,12 @@
         const goalCardContent = document.querySelector('.goal-card-content');
 
         yellowBtn.addEventListener('click', function() {
+            // 패널 확장 상태 저장
+            const swipeUpPanel = document.getElementById('swipeUpPanel');
+            if (swipeUpPanel) {
+                panelWasExpanded = !swipeUpPanel.classList.contains('collapsed');
+            }
+
             // 기간목표 표시
             periodGoalContent.style.display = 'block';
             dailyGoalContent.style.display = 'none';
@@ -3289,9 +3298,8 @@
             if (goalCardContent) {
                 goalCardContent.style.background = '#4A0F50';
             }
-            
+
             // 패널 숨김
-            const swipeUpPanel = document.getElementById('swipeUpPanel');
             if (swipeUpPanel) {
                 swipeUpPanel.style.display = 'none';
             }
@@ -3351,7 +3359,10 @@
             if (weekCalendarGoal) {
                 weekCalendarGoal.style.display = 'none';
             }
-            
+
+            // 흰색 박스 표시 (패널이 collapsed 상태이므로)
+            dailyGoalContent.style.display = 'block';
+
             // 월 달력 표시 (패널이 collapsed 상태이므로)
             const inlineCalendar = document.getElementById('inlineCalendar');
             if (inlineCalendar) {
@@ -3870,13 +3881,18 @@
                         // 한 줄 다짐 숨기고 주간 달력 표시
                         const goalTextWrapper = document.getElementById('goalTextWrapper');
                         const weekCalendarGoal = document.getElementById('weekCalendarInGoalCard');
+                        const dailyGoalContent = document.getElementById('dailyGoalContent');
                         if (goalTextWrapper) {
                             goalTextWrapper.style.display = 'none';
                         }
                         if (weekCalendarGoal) {
                             weekCalendarGoal.style.display = 'block';
                         }
-                        
+                        // 흰색 박스 숨기기
+                        if (dailyGoalContent) {
+                            dailyGoalContent.style.display = 'none';
+                        }
+
                         // 주간 달력으로 전환
                         inlineCurrentWeekStart = getWeekStart(new Date(inlineSelectedDate));
                         renderWeekCalendar();
@@ -4134,15 +4150,16 @@
                         const yellowBtn = document.getElementById('yellow-btn');
                         const pinkBtn = document.getElementById('pink-btn');
                         if (yellowBtn) {
-                            yellowBtn.style.top = '-20px';
+                            yellowBtn.style.top = '-26px';
                         }
                         if (pinkBtn) {
-                            pinkBtn.style.top = '-20px';
+                            pinkBtn.style.top = '-26px';
                         }
                         
                         // 한 줄 다짐 숨기고 주간 달력 표시
                         const goalTextWrapper = document.getElementById('goalTextWrapper');
                         const weekCalendarGoal = document.getElementById('weekCalendarInGoalCard');
+                        const dailyGoalContentPanel = document.getElementById('dailyGoalContent');
                         if (goalTextWrapper) {
                             goalTextWrapper.style.display = 'none';
                         }
@@ -4150,11 +4167,15 @@
                             weekCalendarGoal.style.display = 'block';
                             weekCalendarGoal.style.visibility = 'visible';
                         }
-                        
+                        // 흰색 박스 숨기기
+                        if (dailyGoalContentPanel) {
+                            dailyGoalContentPanel.style.display = 'none';
+                        }
+
                         // 주간 달력으로 전환
                         inlineCurrentWeekStart = getWeekStart(new Date(inlineSelectedDate));
                         renderWeekCalendarInGoalCard();
-                        
+
                         // 흰 박스 안의 달력 숨김
                         if (inlineCalendar) {
                             inlineCalendar.style.display = 'none';
@@ -4519,15 +4540,16 @@
                     const yellowBtn = document.getElementById('yellow-btn');
                     const pinkBtn = document.getElementById('pink-btn');
                     if (yellowBtn) {
-                        yellowBtn.style.top = '-20px';
+                        yellowBtn.style.top = '-26px';
                     }
                     if (pinkBtn) {
-                        pinkBtn.style.top = '-20px';
+                        pinkBtn.style.top = '-26px';
                     }
                     
                     // 한 줄 다짐 숨기고 주간 달력 표시
                     const goalTextWrapper = document.getElementById('goalTextWrapper');
                     const weekCalendarGoal = document.getElementById('weekCalendarInGoalCard');
+                    const dailyGoalContentSwipe = document.getElementById('dailyGoalContent');
                     if (goalTextWrapper) {
                         goalTextWrapper.style.display = 'none';
                     }
@@ -4535,7 +4557,11 @@
                         weekCalendarGoal.style.display = 'block';
                         weekCalendarGoal.style.visibility = 'visible';
                     }
-                    
+                    // 흰색 박스 숨기기
+                    if (dailyGoalContentSwipe) {
+                        dailyGoalContentSwipe.style.display = 'none';
+                    }
+
                     // white-box-content 안의 월 달력 숨김
                     const weekCalendar = document.getElementById('inlineCalendar');
                     if (weekCalendar) {
@@ -4604,18 +4630,30 @@
                     }
                     
                     // 한 줄 다짐 표시하고 주간 달력 숨김
-                    if (goalTextWrapper) {
-                        goalTextWrapper.style.display = 'flex';
+                    const goalTextWrapperCollapse = document.getElementById('goalTextWrapper');
+                    const weekCalendarGoalCollapse = document.getElementById('weekCalendarInGoalCard');
+                    if (goalTextWrapperCollapse) {
+                        goalTextWrapperCollapse.style.display = 'flex';
                     }
-                    if (weekCalendarGoal) {
-                        weekCalendarGoal.style.display = 'none';
+                    if (weekCalendarGoalCollapse) {
+                        weekCalendarGoalCollapse.style.display = 'none';
+                    }
+                    // 흰색 박스 표시
+                    const dailyGoalContentCollapse = document.getElementById('dailyGoalContent');
+                    if (dailyGoalContentCollapse) {
+                        dailyGoalContentCollapse.style.display = 'block';
                     }
                     // 월 달력 표시
-                    const weekCalendar = document.getElementById('inlineCalendar');
-                    if (weekCalendar) {
-                        weekCalendar.style.display = 'block';
+                    const inlineCalendarCollapse = document.getElementById('inlineCalendar');
+                    if (inlineCalendarCollapse) {
+                        inlineCalendarCollapse.style.display = 'block';
+                        inlineCalendarCollapse.classList.remove('week-calendar');
                     }
-                    
+
+                    // 주간 달력 상태 초기화
+                    inlineCurrentWeekStart = null;
+                    inlineDisplayMonth = null;
+
                     // AI 카드 다시 표시 (패널 축소 시)
                     const aiCardContainer = document.querySelector('.ai-card-container');
                     if (aiCardContainer) {
@@ -4626,13 +4664,14 @@
                         aiCardContainer.style.padding = '';
                         aiCardContainer.style.overflow = '';
                     }
-                    
+
                     // 메인 콘텐츠 영역 패딩 복원
                     const appMain = document.querySelector('.app-main');
                     if (appMain) {
                         appMain.style.paddingTop = '';
                     }
-                    
+
+                    // 월 달력으로 다시 렌더링
                     renderInlineCalendar();
                 }
 
@@ -4658,10 +4697,10 @@
                     const yellowBtn = document.getElementById('yellow-btn');
                     const pinkBtn = document.getElementById('pink-btn');
                     if (yellowBtn) {
-                        yellowBtn.style.top = '-20px';
+                        yellowBtn.style.top = '-26px';
                     }
                     if (pinkBtn) {
-                        pinkBtn.style.top = '-20px';
+                        pinkBtn.style.top = '-26px';
                     }
                     
                     // 한 줄 다짐 숨기고 주간 달력 표시
@@ -4738,17 +4777,31 @@
                     }
                     
                     // 한 줄 다짐 표시하고 주간 달력 숨김
-                    if (goalTextWrapper) {
-                        goalTextWrapper.style.display = 'flex';
+                    const goalTextWrapperHandle = document.getElementById('goalTextWrapper');
+                    const weekCalendarGoalHandle = document.getElementById('weekCalendarInGoalCard');
+                    const dailyGoalContentHandle = document.getElementById('dailyGoalContent');
+                    const inlineCalendarHandle = document.getElementById('inlineCalendar');
+
+                    if (goalTextWrapperHandle) {
+                        goalTextWrapperHandle.style.display = 'flex';
                     }
-                    if (weekCalendarGoal) {
-                        weekCalendarGoal.style.display = 'none';
+                    if (weekCalendarGoalHandle) {
+                        weekCalendarGoalHandle.style.display = 'none';
+                    }
+                    // 흰색 박스 표시
+                    if (dailyGoalContentHandle) {
+                        dailyGoalContentHandle.style.display = 'block';
                     }
                     // 월 달력 표시
-                    if (weekCalendar) {
-                        weekCalendar.style.display = 'block';
+                    if (inlineCalendarHandle) {
+                        inlineCalendarHandle.style.display = 'block';
+                        inlineCalendarHandle.classList.remove('week-calendar');
                     }
-                    
+
+                    // 주간 달력 상태 초기화
+                    inlineCurrentWeekStart = null;
+                    inlineDisplayMonth = null;
+
                     // AI 카드 다시 표시 (패널 축소 시)
                     const aiCardContainer = document.querySelector('.ai-card-container');
                     if (aiCardContainer) {
@@ -4759,13 +4812,14 @@
                         aiCardContainer.style.padding = '';
                         aiCardContainer.style.overflow = '';
                     }
-                    
+
                     // 메인 콘텐츠 영역 패딩 복원
                     const appMain = document.querySelector('.app-main');
                     if (appMain) {
                         appMain.style.paddingTop = '';
                     }
-                    
+
+                    // 월 달력으로 렌더링
                     renderInlineCalendar();
                 }
             });
