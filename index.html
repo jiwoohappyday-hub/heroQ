@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
+<head>d:\heroq\index22.html
     <meta charset="UTF-8">
 
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="description" content="모바일 앱처럼 보이는 웹 앱">
     <meta name="theme-color" content="#FFEBEE">
+
+
+
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="My App">
@@ -36,7 +40,7 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Pretendard', sans-serif;
-            background: #FFEBEE;
+            background: transparent;
             min-height: 100vh;
             padding: 20px;
         }
@@ -44,8 +48,8 @@
         .app-container {
             max-width: var(--artboard-width);
             margin: 0 auto;
-            background: #FFEBEE;
-            border-radius: 0;
+            background: transparent;
+            border-radius: 16px;
             box-shadow: none;
             overflow: hidden;
             min-height: 100vh;
@@ -53,7 +57,7 @@
         
         /* 헤더 스타일 - 토스처럼 */
         .app-header {
-            background: #FFEBEE;
+            background: transparent;
             border-bottom: none;
             padding: 16px 20px;
             padding-top: calc(16px + env(safe-area-inset-top));
@@ -74,7 +78,7 @@
             padding: 0 20px;
             padding-top: 0px;
             margin-top: 0px;
-            background: #FFEBEE;
+            background: transparent;
         }
         
         .ai-card-wrapper {
@@ -192,7 +196,7 @@
         
         /* 메인 콘텐츠 - 토스처럼 */
         .app-main {
-            background: #FFEBEE;
+            background: transparent;
             padding: 20px 16px;
             padding-bottom: 90px;
             min-height: calc(100vh - 60px);
@@ -202,7 +206,7 @@
         .content-section {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 8px;
         }
         
         /* 카드 스타일 - 토스처럼 */
@@ -271,7 +275,7 @@
             right: 20px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             z-index: 10;
             overflow: hidden;
         }
@@ -612,7 +616,7 @@
             height: 100%;
             display: flex;
             align-items: center;
-            border-radius: 16px;
+            border-radius: 0;
             overflow: hidden;
         }
         
@@ -1238,7 +1242,7 @@
         }
 
         .swipe-up-panel:not(.collapsed) {
-            height: 452px;
+            height: 490px;
             max-height: calc(100vh - 200px);
             background: #ffffff;
         }
@@ -1258,7 +1262,8 @@
 
         .swipe-up-content {
             padding: 0 20px 20px;
-            height: 100%;
+            height: auto;
+            max-height: calc(100% - 20px);
             overflow-y: auto;
             background: #ffffff;
             border-radius: 20px 20px 0 0;
@@ -1271,12 +1276,26 @@
             pointer-events: none;
         }
 
+        .swipe-up-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
         .swipe-up-title {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: 18px;
             font-weight: 700;
             color: #191f28;
-            margin-bottom: 16px;
+            margin-bottom: 0;
+        }
+
+        .swipe-up-completion {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 12px;
+            font-weight: 300;
+            color: #000000;
         }
 
         .daily-fields-wrapper {
@@ -1286,35 +1305,29 @@
             gap: 8px;
             width: 100%;
             margin: 0;
-            flex: 1;
             min-height: 0;
             overflow-y: auto;
         }
 
         .daily-field-container {
             width: 100%;
-            height: 44px;
-            background: #FFEBEE;
-            border: 1.5px solid rgba(74, 15, 80, 0.2);
-            border-radius: 16px;
+            height: 1.875rem;
+            background: transparent;
+            border: none;
+            border-radius: 0;
             display: flex;
             align-items: center;
-            padding: 0 12px 0 8px;
-            gap: 12px;
+            padding: 0;
+            gap: 8px;
             transition: all 0.25s ease;
-            box-shadow: 0 2px 8px rgba(74, 15, 80, 0.06);
-        }
-
-        .daily-field-container:hover {
-            border-color: rgba(74, 15, 80, 0.35);
-            box-shadow: 0 4px 12px rgba(74, 15, 80, 0.1);
+            position: relative;
         }
 
         .daily-date-badge {
             width: 48px;
-            height: 30px;
-            background: linear-gradient(135deg, #FFC0CC 0%, #FFB0BE 100%);
-            border-radius: 10px;
+            height: 1.875rem;
+            background: #E8E8E8;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1322,26 +1335,20 @@
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: 12px;
             font-weight: 700;
-            color: #c24c4c;
+            color: #c1c1c1;
             cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 6px rgba(255, 192, 204, 0.4);
-        }
-
-        .daily-date-badge:hover {
-            transform: scale(1.02);
-            box-shadow: 0 3px 10px rgba(255, 192, 204, 0.5);
+            transition: background 0.2s, color 0.2s;
         }
 
         .daily-date-badge.date-selected {
             color: #282B30;
-            background: linear-gradient(135deg, #FFD0DA 0%, #FFC0CC 100%);
+            background: #FFC0CC;
         }
 
         .daily-checkbox {
-            width: 22px;
-            height: 22px;
-            border: 2px solid rgba(74, 15, 80, 0.25);
+            width: 20px;
+            height: 20px;
+            border: 1.5px solid rgba(74, 15, 80, 0.25);
             border-radius: 50%;
             flex-shrink: 0;
             cursor: pointer;
@@ -1370,10 +1377,17 @@
         }
 
         .daily-field-input-area {
-            flex: 1;
-            height: 100%;
+            width: 13.79981rem;
+            height: 1.875rem;
+            border-radius: 0.75rem;
+            border: none;
+            box-shadow: inset 0 0 0 0.5px #4A0F50;
+            background: #FFF;
             display: flex;
             align-items: center;
+            padding: 0 12px;
+            flex-shrink: 0;
+            transition: border-color 0.2s, background 0.2s;
         }
 
         .daily-field-input {
@@ -1394,10 +1408,9 @@
             transition: color 0.2s;
         }
 
-        .daily-field-container:focus-within {
-            background: #4A0F50;
+        .daily-field-container:focus-within .daily-field-input-area {
             border-color: #4A0F50;
-            box-shadow: 0 4px 16px rgba(74, 15, 80, 0.25);
+            background: #4A0F50;
         }
 
         .daily-field-container:focus-within .daily-field-input {
@@ -1408,12 +1421,25 @@
             color: #ffffff !important;
         }
 
-        .daily-field-container:focus-within .daily-checkbox {
-            border-color: #ffffff;
+        .daily-field-container.completed .daily-field-input-area {
+            border-color: #4A0F50;
+            background: #FFF;
         }
 
         .daily-field-container.completed .daily-field-input {
             color: #191f28;
+        }
+
+        .daily-field-container.completed:focus-within .daily-field-input-area {
+            background: #4A0F50;
+        }
+
+        .daily-field-container.completed:focus-within .daily-field-input {
+            color: #ffffff !important;
+        }
+
+        .daily-field-container.completed:focus-within .daily-field-input::placeholder {
+            color: #ffffff !important;
         }
         
         /* 시작하기 버튼 */
@@ -1422,13 +1448,13 @@
             height: 56px;
             background: #4A0F50;
             border: none;
-            border-radius: 16px;
+            border-radius: 33px;
             color: #ffffff;
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 12px;
             transition: all 0.2s ease;
             box-shadow: 0 2px 8px rgba(74, 15, 80, 0.2);
             flex-shrink: 0;
@@ -1677,7 +1703,7 @@
         .month-picker-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            gap: 8px;
             margin-top: 16px;
             padding: 0 16px 16px 16px;
         }
@@ -2024,7 +2050,10 @@
         <div class="swipe-up-panel" id="swipeUpPanel" style="display: none;">
             <div class="swipe-up-handle"></div>
             <div class="swipe-up-content">
-                <div class="swipe-up-title" id="swipeUpTitle">오늘의 할 일</div>
+                <div class="swipe-up-header">
+                    <div class="swipe-up-title" id="swipeUpTitle">오늘의 할 일</div>
+                    <div class="swipe-up-completion" id="swipeUpCompletion">완료도: 0 %</div>
+                </div>
                 <!-- 일일목표 필드들 컨테이너 -->
                 <div class="daily-fields-wrapper" id="dailyFieldsWrapper">
                     <div class="daily-field-container">
@@ -3324,7 +3353,13 @@
                 aiCardContainer.style.padding = '';
                 aiCardContainer.style.overflow = '';
             }
-            
+
+            // 하단 네비게이션 다시 표시
+            const bottomNavYellow = document.querySelector('.bottom-nav');
+            if (bottomNavYellow) {
+                bottomNavYellow.style.display = 'flex';
+            }
+
             // 메인 콘텐츠 영역 패딩 복원
             const appMain = document.querySelector('.app-main');
             if (appMain) {
@@ -3342,59 +3377,117 @@
             if (goalCardContent) {
                 goalCardContent.style.background = '#FF9BAD';
             }
-            
-            // 패널 표시 및 초기 상태 설정
+
+            // 패널 표시 및 이전 상태 복원
             const swipeUpPanel = document.getElementById('swipeUpPanel');
-            if (swipeUpPanel) {
-                swipeUpPanel.style.display = 'block';
-                swipeUpPanel.classList.add('collapsed');
-            }
-            
-            // 한 줄 다짐 표시, 주간 달력 숨김
             const goalTextWrapper = document.getElementById('goalTextWrapper');
             const weekCalendarGoal = document.getElementById('weekCalendarInGoalCard');
-            if (goalTextWrapper) {
-                goalTextWrapper.style.display = 'flex';
-            }
-            if (weekCalendarGoal) {
-                weekCalendarGoal.style.display = 'none';
-            }
-
-            // 흰색 박스 표시 (패널이 collapsed 상태이므로)
-            dailyGoalContent.style.display = 'block';
-
-            // 월 달력 표시 (패널이 collapsed 상태이므로)
             const inlineCalendar = document.getElementById('inlineCalendar');
-            if (inlineCalendar) {
-                inlineCalendar.style.display = 'block';
+
+            if (swipeUpPanel) {
+                swipeUpPanel.style.display = 'block';
+
+                if (panelWasExpanded) {
+                    // 확장 상태 복원
+                    swipeUpPanel.classList.remove('collapsed');
+                    swipeUpPanel.style.transform = 'translateX(-50%) translateY(0)';
+
+                    // 주간 달력 표시, 한 줄 다짐 숨김
+                    if (goalTextWrapper) {
+                        goalTextWrapper.style.display = 'none';
+                    }
+                    if (weekCalendarGoal) {
+                        weekCalendarGoal.style.display = 'block';
+                    }
+                    // 흰색 박스 숨김
+                    dailyGoalContent.style.display = 'none';
+
+                    // AI 카드 숨기기
+                    const aiCardContainer = document.querySelector('.ai-card-container');
+                    if (aiCardContainer) {
+                        aiCardContainer.style.display = 'none';
+                        aiCardContainer.style.visibility = 'hidden';
+                        aiCardContainer.style.height = '0';
+                        aiCardContainer.style.margin = '0';
+                        aiCardContainer.style.padding = '0';
+                        aiCardContainer.style.overflow = 'hidden';
+                    }
+
+                    // 하단 네비게이션 숨기기
+                    const bottomNavPink = document.querySelector('.bottom-nav');
+                    if (bottomNavPink) {
+                        bottomNavPink.style.display = 'none';
+                    }
+
+                    // 메인 콘텐츠 영역 패딩 조정
+                    const appMain = document.querySelector('.app-main');
+                    if (appMain) {
+                        appMain.style.paddingTop = '12px';
+                    }
+
+                    // 주간 달력 렌더링
+                    if (!inlineCurrentWeekStart) {
+                        const today = new Date();
+                        inlineCurrentWeekStart = getWeekStart(inlineSelectedDate ? new Date(inlineSelectedDate) : today);
+                    }
+                    if (!inlineDisplayMonth) {
+                        const selectedDate = inlineSelectedDate ? new Date(inlineSelectedDate) : new Date();
+                        inlineDisplayMonth = selectedDate.getMonth() + 1;
+                    }
+                    renderWeekCalendarInGoalCard();
+                } else {
+                    // 축소 상태
+                    swipeUpPanel.classList.add('collapsed');
+
+                    // 한 줄 다짐 표시, 주간 달력 숨김
+                    if (goalTextWrapper) {
+                        goalTextWrapper.style.display = 'flex';
+                    }
+                    if (weekCalendarGoal) {
+                        weekCalendarGoal.style.display = 'none';
+                    }
+                    // 흰색 박스 표시
+                    dailyGoalContent.style.display = 'block';
+
+                    // 월 달력 표시
+                    if (inlineCalendar) {
+                        inlineCalendar.style.display = 'block';
+                    }
+                    renderInlineCalendar();
+
+                    // 하단 네비게이션 표시
+                    const bottomNavPinkCollapsed = document.querySelector('.bottom-nav');
+                    if (bottomNavPinkCollapsed) {
+                        bottomNavPinkCollapsed.style.display = 'flex';
+                    }
+                }
             }
-            
-            // 달력 렌더링
-            renderInlineCalendar();
-            
+
             // 오늘 날짜 자동 선택 및 데이터 불러오기
             setTimeout(() => {
                 const today = new Date();
                 const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-                inlineSelectedDate = todayStr;
+                if (!inlineSelectedDate) {
+                    inlineSelectedDate = todayStr;
+                }
 
-                // 오늘 날짜에 selected 클래스 추가
-                const todayDay = inlineCalendarDays.querySelector(`[data-date="${todayStr}"]`);
-                if (todayDay) {
+                // 선택된 날짜에 selected 클래스 추가
+                const selectedDay = inlineCalendarDays ? inlineCalendarDays.querySelector(`[data-date="${inlineSelectedDate}"]`) : null;
+                if (selectedDay) {
                     // 이전 선택 제거
                     inlineCalendarDays.querySelectorAll('.inline-day').forEach(d => d.classList.remove('selected'));
                     // 새 선택
-                    todayDay.classList.add('selected');
-
-                    // 스와이프 업 패널 타이틀 업데이트
-                    const [y, m, d] = todayStr.split('-');
-                    if (swipeUpTitle) {
-                        swipeUpTitle.textContent = `${parseInt(m)}월 ${parseInt(d)}일의 할 일`;
-                    }
-
-                    // 해당 날짜의 기간목표 데이터 불러오기
-                    loadDailyFieldsForDate(todayStr);
+                    selectedDay.classList.add('selected');
                 }
+
+                // 스와이프 업 패널 타이틀 업데이트
+                const [y, m, d] = inlineSelectedDate.split('-');
+                if (swipeUpTitle) {
+                    swipeUpTitle.textContent = `${parseInt(m)}월 ${parseInt(d)}일의 할 일`;
+                }
+
+                // 해당 날짜의 기간목표 데이터 불러오기
+                loadDailyFieldsForDate(inlineSelectedDate);
             }, 100);
         });
 
@@ -3896,7 +3989,7 @@
                         // 주간 달력으로 전환
                         inlineCurrentWeekStart = getWeekStart(new Date(inlineSelectedDate));
                         renderWeekCalendar();
-                        
+
                         // AI 카드 완전히 숨기기 (일일목표 화면에서 패널 확장 시 - 완전히 다른 화면처럼)
                         const aiCardContainer = document.querySelector('.ai-card-container');
                         if (aiCardContainer) {
@@ -3907,13 +4000,19 @@
                             aiCardContainer.style.padding = '0';
                             aiCardContainer.style.overflow = 'hidden';
                         }
-                        
+
                         // 메인 콘텐츠 영역의 패딩 조정 (AI 카드가 없으므로)
                         const appMain = document.querySelector('.app-main');
                         if (appMain) {
                             appMain.style.paddingTop = '12px';
                         }
-                        
+
+                        // 하단 네비게이션 숨기기
+                        const bottomNav = document.querySelector('.bottom-nav');
+                        if (bottomNav) {
+                            bottomNav.style.display = 'none';
+                        }
+
                         // 목표 카드 버튼 위치로 스크롤 (로고 다음 바로 컨테이너가 보이도록)
                         const goalCard = document.querySelector('.goal-card');
                         if (goalCard) {
@@ -4180,7 +4279,7 @@
                         if (inlineCalendar) {
                             inlineCalendar.style.display = 'none';
                         }
-                        
+
                         // AI 카드 완전히 숨기기 (일일목표 화면에서 패널 확장 시 - 완전히 다른 화면처럼)
                         const aiCardContainer = document.querySelector('.ai-card-container');
                         if (aiCardContainer) {
@@ -4191,13 +4290,19 @@
                             aiCardContainer.style.padding = '0';
                             aiCardContainer.style.overflow = 'hidden';
                         }
-                        
+
                         // 메인 콘텐츠 영역의 패딩 조정 (AI 카드가 없으므로)
                         const appMain = document.querySelector('.app-main');
                         if (appMain) {
                             appMain.style.paddingTop = '12px';
                         }
-                        
+
+                        // 하단 네비게이션 숨기기
+                        const bottomNav = document.querySelector('.bottom-nav');
+                        if (bottomNav) {
+                            bottomNav.style.display = 'none';
+                        }
+
                         // 목표 카드 버튼 위치로 스크롤 (로고 다음 바로 컨테이너가 보이도록)
                         const goalCard = document.querySelector('.goal-card');
                         if (goalCard) {
@@ -4567,7 +4672,7 @@
                     if (weekCalendar) {
                         weekCalendar.style.display = 'none';
                     }
-                    
+
                     // AI 카드 완전히 숨기기 (일일목표 화면에서 패널 확장 시 - 완전히 다른 화면처럼)
                     const aiCardContainer = document.querySelector('.ai-card-container');
                     if (aiCardContainer) {
@@ -4578,13 +4683,19 @@
                         aiCardContainer.style.padding = '0';
                         aiCardContainer.style.overflow = 'hidden';
                     }
-                    
+
                     // 메인 콘텐츠 영역의 패딩 조정 (AI 카드가 없으므로)
                     const appMain = document.querySelector('.app-main');
                     if (appMain) {
                         appMain.style.paddingTop = '12px';
                     }
-                    
+
+                    // 하단 네비게이션 숨기기
+                    const bottomNavSwipe = document.querySelector('.bottom-nav');
+                    if (bottomNavSwipe) {
+                        bottomNavSwipe.style.display = 'none';
+                    }
+
                     // 목표 카드 버튼 위치로 스크롤 (로고 다음 바로 컨테이너가 보이도록)
                     const goalCard = document.querySelector('.goal-card');
                     if (goalCard) {
@@ -4665,6 +4776,12 @@
                         aiCardContainer.style.overflow = '';
                     }
 
+                    // 하단 네비게이션 다시 표시
+                    const bottomNavCollapse = document.querySelector('.bottom-nav');
+                    if (bottomNavCollapse) {
+                        bottomNavCollapse.style.display = 'flex';
+                    }
+
                     // 메인 콘텐츠 영역 패딩 복원
                     const appMain = document.querySelector('.app-main');
                     if (appMain) {
@@ -4716,7 +4833,7 @@
                     if (weekCalendar) {
                         weekCalendar.style.display = 'none';
                     }
-                    
+
                     // AI 카드 완전히 숨기기 (일일목표 화면에서 패널 확장 시 - 완전히 다른 화면처럼)
                     const aiCardContainer = document.querySelector('.ai-card-container');
                     if (aiCardContainer) {
@@ -4727,13 +4844,19 @@
                         aiCardContainer.style.padding = '0';
                         aiCardContainer.style.overflow = 'hidden';
                     }
-                    
+
                     // 메인 콘텐츠 영역의 패딩 조정 (AI 카드가 없으므로)
                     const appMain = document.querySelector('.app-main');
                     if (appMain) {
                         appMain.style.paddingTop = '12px';
                     }
-                    
+
+                    // 하단 네비게이션 숨기기
+                    const bottomNavHandle = document.querySelector('.bottom-nav');
+                    if (bottomNavHandle) {
+                        bottomNavHandle.style.display = 'none';
+                    }
+
                     // 목표 카드 버튼 위치로 스크롤 (로고 다음 바로 컨테이너가 보이도록)
                     const goalCard = document.querySelector('.goal-card');
                     if (goalCard) {
@@ -4811,6 +4934,12 @@
                         aiCardContainer.style.margin = '';
                         aiCardContainer.style.padding = '';
                         aiCardContainer.style.overflow = '';
+                    }
+
+                    // 하단 네비게이션 다시 표시
+                    const bottomNavHandle = document.querySelector('.bottom-nav');
+                    if (bottomNavHandle) {
+                        bottomNavHandle.style.display = 'flex';
                     }
 
                     // 메인 콘텐츠 영역 패딩 복원
