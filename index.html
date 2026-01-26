@@ -1484,8 +1484,34 @@
             color: #999999;
         }
         
-        .daily-date-box-input-area:focus-within {
+        .daily-date-box-input-area.selected {
+            background: #4A0F50;
             box-shadow: 0 0 0 1.5px #4A0F50;
+        }
+        
+        .daily-date-box-input-area.selected .daily-date-box-input {
+            color: #ffffff;
+        }
+        
+        .daily-date-box-input-area.selected .daily-date-box-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .daily-date-box-input-area:focus-within {
+            background: #FFF;
+            box-shadow: 0 0 0 1.5px #4A0F50;
+        }
+        
+        .daily-date-box-input-area:focus-within .daily-date-box-input {
+            color: #191f28;
+        }
+        
+        .daily-date-box-input-area:focus-within.selected {
+            background: #4A0F50;
+        }
+        
+        .daily-date-box-input-area:focus-within.selected .daily-date-box-input {
+            color: #ffffff;
         }
 
         .daily-field-input {
@@ -2013,6 +2039,145 @@
             background-color: #f5f6f8;
         }
         
+        /* 타이머 설정 화면 */
+        .timer-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #FFEBEE;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .timer-screen-content {
+            width: 100%;
+            max-width: var(--artboard-width);
+            height: 100%;
+            background: #FFEBEE;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .timer-screen-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 40px;
+            padding-top: calc(20px + env(safe-area-inset-top));
+        }
+        
+        .timer-back-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: none;
+            font-size: 24px;
+            color: #191f28;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .timer-back-btn:active {
+            transform: scale(0.95);
+            background: #f5f5f5;
+        }
+        
+        .timer-screen-title {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #191f28;
+        }
+        
+        .timer-screen-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+        }
+        
+        .timer-task-name {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: #191f28;
+            text-align: center;
+            padding: 12px 24px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .timer-display {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 64px;
+            font-weight: 700;
+            color: #4A0F50;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+        
+        .timer-controls {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+        
+        .timer-btn {
+            min-width: 100px;
+            height: 56px;
+            border-radius: 28px;
+            border: none;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .timer-start-btn {
+            background: #4A0F50;
+            color: #ffffff;
+        }
+        
+        .timer-start-btn:active {
+            transform: scale(0.98);
+            background: #3a0c40;
+        }
+        
+        .timer-pause-btn {
+            background: #FF3459;
+            color: #ffffff;
+        }
+        
+        .timer-pause-btn:active {
+            transform: scale(0.98);
+            background: #e02d4f;
+        }
+        
+        .timer-reset-btn {
+            background: #ffffff;
+            color: #191f28;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .timer-reset-btn:active {
+            transform: scale(0.98);
+            background: #f5f5f5;
+        }
+        
         /* 모바일에서는 전체 화면 */
         @media (max-width: 768px) {
             body {
@@ -2274,6 +2439,25 @@
                     <li><a href="#" class="menu-link">도움말</a></li>
                     <li><a href="#" class="menu-link">정보</a></li>
                 </ul>
+            </div>
+        </div>
+
+        <!-- 타이머 설정 화면 -->
+        <div class="timer-screen" id="timerScreen" style="display: none;">
+            <div class="timer-screen-content">
+                <div class="timer-screen-header">
+                    <button class="timer-back-btn" id="timerBackBtn">‹</button>
+                    <h2 class="timer-screen-title" id="timerScreenTitle">타이머 설정</h2>
+                </div>
+                <div class="timer-screen-body">
+                    <div class="timer-task-name" id="timerTaskName">할 일 이름</div>
+                    <div class="timer-display" id="timerDisplay">00:00:00</div>
+                    <div class="timer-controls">
+                        <button class="timer-btn timer-start-btn" id="timerStartBtn">시작</button>
+                        <button class="timer-btn timer-pause-btn" id="timerPauseBtn" style="display: none;">일시정지</button>
+                        <button class="timer-btn timer-reset-btn" id="timerResetBtn">리셋</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -3420,6 +3604,30 @@
                         setTimeout(() => newInput.focus(), 10);
                     }
                 });
+                
+                // 입력 필드 클릭 시 선택 상태로 변경
+                document.addEventListener('click', function(e) {
+                    const inputArea = e.target.closest('.daily-date-box-input-area');
+                    if (inputArea) {
+                        // 다른 선택 해제
+                        document.querySelectorAll('.daily-date-box-input-area').forEach(area => {
+                            area.classList.remove('selected');
+                        });
+                        
+                        // 클릭한 필드 선택
+                        inputArea.classList.add('selected');
+                    }
+                });
+                
+                // 입력 시작 시 선택 상태 유지
+                document.addEventListener('focus', function(e) {
+                    if (e.target.classList.contains('daily-date-box-input')) {
+                        const inputArea = e.target.closest('.daily-date-box-input-area');
+                        if (inputArea) {
+                            inputArea.classList.add('selected');
+                        }
+                    }
+                }, true);
                 
                 window.dailyFieldsEventListenersAdded = true;
             }
@@ -5097,6 +5305,152 @@
         }
         
         // 초기 로드 시 이벤트 리스너는 전역 이벤트 위임으로 처리됨 (loadDailyFieldsForDate 함수 내에서 설정)
+        
+        // 타이머 관련 변수
+        let timerInterval = null;
+        let timerSeconds = 0;
+        let timerRunning = false;
+        let currentTaskName = '';
+        
+        // 시작하기 버튼 클릭 이벤트
+        const startButton = document.getElementById('startButton');
+        if (startButton) {
+            startButton.addEventListener('click', function() {
+                // 선택된 입력 필드 찾기
+                const selectedInputArea = document.querySelector('.daily-date-box-input-area.selected');
+                let selectedInput = null;
+                
+                if (selectedInputArea) {
+                    selectedInput = selectedInputArea.querySelector('.daily-date-box-input');
+                }
+                
+                if (selectedInput) {
+                    currentTaskName = selectedInput.value.trim() || '할 일';
+                } else {
+                    // 선택된 필드가 없으면 첫 번째 입력 필드 사용
+                    const firstInput = document.querySelector('.daily-date-box-input');
+                    if (firstInput) {
+                        currentTaskName = firstInput.value.trim() || '할 일';
+                        // 첫 번째 필드를 선택 상태로 변경
+                        const firstInputArea = firstInput.closest('.daily-date-box-input-area');
+                        if (firstInputArea) {
+                            firstInputArea.classList.add('selected');
+                        }
+                    } else {
+                        currentTaskName = '할 일';
+                    }
+                }
+                
+                // 타이머 화면 표시
+                const timerScreen = document.getElementById('timerScreen');
+                const timerTaskName = document.getElementById('timerTaskName');
+                const timerDisplay = document.getElementById('timerDisplay');
+                
+                if (timerScreen && timerTaskName && timerDisplay) {
+                    timerTaskName.textContent = currentTaskName;
+                    timerDisplay.textContent = '00:00:00';
+                    timerSeconds = 0;
+                    timerRunning = false;
+                    timerScreen.style.display = 'flex';
+                    
+                    // 시작 버튼 표시, 일시정지 버튼 숨김
+                    const timerStartBtn = document.getElementById('timerStartBtn');
+                    const timerPauseBtn = document.getElementById('timerPauseBtn');
+                    if (timerStartBtn) timerStartBtn.style.display = 'block';
+                    if (timerPauseBtn) timerPauseBtn.style.display = 'none';
+                }
+            });
+        }
+        
+        // 타이머 뒤로가기 버튼
+        const timerBackBtn = document.getElementById('timerBackBtn');
+        if (timerBackBtn) {
+            timerBackBtn.addEventListener('click', function() {
+                const timerScreen = document.getElementById('timerScreen');
+                if (timerScreen) {
+                    // 타이머 정지
+                    if (timerInterval) {
+                        clearInterval(timerInterval);
+                        timerInterval = null;
+                        timerRunning = false;
+                    }
+                    timerScreen.style.display = 'none';
+                }
+            });
+        }
+        
+        // 타이머 시작 버튼
+        const timerStartBtn = document.getElementById('timerStartBtn');
+        if (timerStartBtn) {
+            timerStartBtn.addEventListener('click', function() {
+                if (!timerRunning) {
+                    timerRunning = true;
+                    timerInterval = setInterval(function() {
+                        timerSeconds++;
+                        updateTimerDisplay();
+                    }, 1000);
+                    
+                    // 시작 버튼 숨기고 일시정지 버튼 표시
+                    timerStartBtn.style.display = 'none';
+                    const timerPauseBtn = document.getElementById('timerPauseBtn');
+                    if (timerPauseBtn) timerPauseBtn.style.display = 'block';
+                }
+            });
+        }
+        
+        // 타이머 일시정지 버튼
+        const timerPauseBtn = document.getElementById('timerPauseBtn');
+        if (timerPauseBtn) {
+            timerPauseBtn.addEventListener('click', function() {
+                if (timerRunning) {
+                    timerRunning = false;
+                    if (timerInterval) {
+                        clearInterval(timerInterval);
+                        timerInterval = null;
+                    }
+                    
+                    // 일시정지 버튼 숨기고 시작 버튼 표시
+                    timerPauseBtn.style.display = 'none';
+                    const timerStartBtn = document.getElementById('timerStartBtn');
+                    if (timerStartBtn) timerStartBtn.style.display = 'block';
+                }
+            });
+        }
+        
+        // 타이머 리셋 버튼
+        const timerResetBtn = document.getElementById('timerResetBtn');
+        if (timerResetBtn) {
+            timerResetBtn.addEventListener('click', function() {
+                timerSeconds = 0;
+                timerRunning = false;
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+                updateTimerDisplay();
+                
+                // 시작 버튼 표시, 일시정지 버튼 숨김
+                const timerStartBtn = document.getElementById('timerStartBtn');
+                const timerPauseBtn = document.getElementById('timerPauseBtn');
+                if (timerStartBtn) timerStartBtn.style.display = 'block';
+                if (timerPauseBtn) timerPauseBtn.style.display = 'none';
+            });
+        }
+        
+        // 타이머 표시 업데이트 함수
+        function updateTimerDisplay() {
+            const timerDisplay = document.getElementById('timerDisplay');
+            if (!timerDisplay) return;
+            
+            const hours = Math.floor(timerSeconds / 3600);
+            const minutes = Math.floor((timerSeconds % 3600) / 60);
+            const seconds = timerSeconds % 60;
+            
+            timerDisplay.textContent = 
+                String(hours).padStart(2, '0') + ':' +
+                String(minutes).padStart(2, '0') + ':' +
+                String(seconds).padStart(2, '0');
+        }
     </script>
 </body>
 </html>
