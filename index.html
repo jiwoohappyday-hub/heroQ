@@ -1284,8 +1284,12 @@
         }
 
         .swipe-up-title {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #FFC0CC;
+            border-radius: 12px;
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 18px;
+            font-size: 12px;
             font-weight: 700;
             color: #191f28;
             margin-bottom: 0;
@@ -1397,8 +1401,8 @@
             transition: border-color 0.2s, background 0.2s;
         }
         
-        /* 3분할 계획법 영역 (아침/점심/저녁) */
-        .daily-time-areas {
+        /* 날짜별 박스 영역 */
+        .daily-date-boxes {
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -1406,69 +1410,65 @@
             margin-top: 16px;
         }
         
-        .daily-time-section {
+        .daily-date-box {
             width: 100%;
-            background: #FFC0CC;
+            max-width: 300px;
+            min-height: 104px;
+            background: #FFEBEE;
             border-radius: 12px;
             padding: 12px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: relative;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
         }
         
-        .daily-time-label {
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 13px;
-            font-weight: 700;
+        .daily-date-box-add-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ffffff;
             color: #191f28;
-            margin-bottom: 8px;
+            border: none;
+            font-size: 18px;
+            font-weight: 300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.2s;
+            margin-top: 8px;
+            align-self: flex-end;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
         
-        .daily-date-fields {
+        .daily-date-box-add-btn:active {
+            transform: scale(0.95);
+            background: #f5f5f5;
+        }
+        
+        .daily-date-box-fields {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
         
-        .daily-date-field-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .daily-date-box-input-area {
             width: 100%;
-        }
-        
-        .daily-date-field-badge {
-            width: 48px;
-            height: 1.875rem;
-            background: #E8E8E8;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            color: #c1c1c1;
-        }
-        
-        .daily-date-field-badge.date-selected {
-            color: #282B30;
-            background: #FFC0CC;
-        }
-        
-        .daily-date-field-input-area {
-            flex: 1;
             height: 1.875rem;
             border-radius: 0.75rem;
             border: none;
-            box-shadow: inset 0 0 0 0.5px #4A0F50;
             background: #FFF;
             display: flex;
             align-items: center;
             padding: 0 12px;
-            transition: border-color 0.2s, background 0.2s;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
         
-        .daily-date-field-input {
+        .daily-date-box-input {
             width: 100%;
             background: transparent;
             border: none;
@@ -1476,48 +1476,16 @@
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: 14px;
             font-weight: 500;
-            color: #000000;
-            padding: 0;
-            transition: all 0.2s;
-        }
-        
-        .daily-date-field-input::placeholder {
-            color: #999999;
-            transition: color 0.2s;
-        }
-        
-        .daily-time-section:focus-within .daily-date-field-input-area {
-            border-color: #4A0F50;
-            background: #4A0F50;
-        }
-        
-        .daily-time-section:focus-within .daily-date-field-input {
-            color: #ffffff !important;
-        }
-        
-        .daily-time-section:focus-within .daily-date-field-input::placeholder {
-            color: #ffffff !important;
-        }
-        
-        .daily-field-container.completed .daily-date-field-input-area {
-            border-color: #4A0F50;
-            background: #FFF;
-        }
-        
-        .daily-field-container.completed .daily-date-field-input {
             color: #191f28;
+            padding: 0;
         }
         
-        .daily-field-container.completed:focus-within .daily-date-field-input-area {
-            background: #4A0F50;
+        .daily-date-box-input::placeholder {
+            color: #999999;
         }
         
-        .daily-field-container.completed:focus-within .daily-date-field-input {
-            color: #ffffff !important;
-        }
-        
-        .daily-field-container.completed:focus-within .daily-date-field-input::placeholder {
-            color: #ffffff !important;
+        .daily-date-box-input-area:focus-within {
+            box-shadow: 0 0 0 1.5px #4A0F50;
         }
 
         .daily-field-input {
@@ -2181,44 +2149,41 @@
             <div class="swipe-up-handle"></div>
             <div class="swipe-up-content">
                 <div class="swipe-up-header">
-                    <div class="swipe-up-title" id="swipeUpTitle">오늘의 할 일</div>
+                    <div class="swipe-up-title" id="swipeUpTitle">0월 00일의 할 일</div>
                     <div class="swipe-up-completion" id="swipeUpCompletion">완료도: 0 %</div>
                 </div>
                 <!-- 일일목표 필드들 컨테이너 -->
                 <div class="daily-fields-wrapper" id="dailyFieldsWrapper">
-                    <div class="daily-field-container">
-                        <div class="daily-field-row">
-                            <div class="daily-date-badge" id="dailyDateBadgeInField">00/00</div>
-                            <div class="daily-checkbox"></div>
-                            <div class="daily-field-input-area">
-                                <input type="text" class="daily-field-input" placeholder="오늘의 할 일을 입력해주세요">
-                            </div>
-                        </div>
-                        <!-- 3분할 계획법 영역 (아침/점심/저녁) -->
-                        <div class="daily-time-areas">
+                    <!-- 날짜별 박스 영역 (아침/점심/저녁 기본 제공) -->
+                    <div class="daily-date-boxes" id="dailyDateBoxes">
                             <!-- 아침 영역 -->
-                            <div class="daily-time-section" data-time="morning">
-                                <div class="daily-time-label">아침</div>
-                                <div class="daily-date-fields" id="morningFields">
-                                    <!-- 날짜별 데이터가 동적으로 추가됨 -->
+                            <div class="daily-date-box" data-time="morning">
+                                <div class="daily-date-box-fields" data-time="morning">
+                                    <div class="daily-date-box-input-area">
+                                        <input type="text" class="daily-date-box-input" placeholder="입력해 주세요">
+                                    </div>
                                 </div>
+                                <button class="daily-date-box-add-btn" aria-label="추가">+</button>
                             </div>
                             <!-- 점심 영역 -->
-                            <div class="daily-time-section" data-time="lunch">
-                                <div class="daily-time-label">점심</div>
-                                <div class="daily-date-fields" id="lunchFields">
-                                    <!-- 날짜별 데이터가 동적으로 추가됨 -->
+                            <div class="daily-date-box" data-time="lunch">
+                                <div class="daily-date-box-fields" data-time="lunch">
+                                    <div class="daily-date-box-input-area">
+                                        <input type="text" class="daily-date-box-input" placeholder="입력해 주세요">
+                                    </div>
                                 </div>
+                                <button class="daily-date-box-add-btn" aria-label="추가">+</button>
                             </div>
                             <!-- 저녁 영역 -->
-                            <div class="daily-time-section" data-time="dinner">
-                                <div class="daily-time-label">저녁</div>
-                                <div class="daily-date-fields" id="dinnerFields">
-                                    <!-- 날짜별 데이터가 동적으로 추가됨 -->
+                            <div class="daily-date-box" data-time="dinner">
+                                <div class="daily-date-box-fields" data-time="dinner">
+                                    <div class="daily-date-box-input-area">
+                                        <input type="text" class="daily-date-box-input" placeholder="입력해 주세요">
+                                    </div>
                                 </div>
+                                <button class="daily-date-box-add-btn" aria-label="추가">+</button>
                             </div>
                         </div>
-                    </div>
                 </div>
                 <!-- 시작하기 버튼 -->
                 <button class="start-button" id="startButton">시작하기</button>
@@ -3317,76 +3282,147 @@
             const dailyFieldsWrapper = document.getElementById('dailyFieldsWrapper');
             if (!dailyFieldsWrapper) return;
             
-            // 날짜 뱃지 업데이트
-            const [y, m, d] = dateStr.split('-');
-            const dateBadge = document.getElementById('dailyDateBadgeInField');
-            if (dateBadge) {
-                dateBadge.textContent = `${m}/${d}`;
-            }
+            // 선택한 날짜의 기간목표 데이터 가져오기
+            const selectedDateData = dateFieldData[dateStr] || [];
             
-            // 첫 번째 필드의 상단 입력 필드 초기화
-            const firstField = dailyFieldsWrapper.querySelector('.daily-field-container');
-            if (firstField) {
-                const firstInput = firstField.querySelector('.daily-field-input');
-                const firstCheckbox = firstField.querySelector('.daily-checkbox');
+            // 각 시간대 영역 초기화
+            const timeSections = [
+                { time: 'morning', label: '아침' },
+                { time: 'lunch', label: '점심' },
+                { time: 'dinner', label: '저녁' }
+            ];
+            
+            // 각 시간대 영역 초기화 (기존 필드 제거, 첫 번째 필드만 남김)
+            timeSections.forEach((section) => {
+                const dateBox = document.querySelector(`.daily-date-box[data-time="${section.time}"]`);
+                if (!dateBox) return;
+                
+                const fieldsContainer = dateBox.querySelector('.daily-date-box-fields');
+                if (!fieldsContainer) return;
+                
+                // 기존 필드 제거 (첫 번째 필드 제외)
+                const existingInputs = fieldsContainer.querySelectorAll('.daily-date-box-input-area');
+                for (let i = 1; i < existingInputs.length; i++) {
+                    existingInputs[i].remove();
+                }
+                
+                // 첫 번째 입력 필드 초기화
+                const firstInput = fieldsContainer.querySelector('.daily-date-box-input');
                 if (firstInput) {
                     firstInput.value = '';
                 }
-                if (firstCheckbox) {
-                    firstCheckbox.classList.remove('checked');
-                }
-                firstField.classList.remove('completed');
-            }
+            });
             
-            // 각 시간대 영역 초기화 및 데이터 로드
-            const timeSections = [
-                { id: 'morningFields', label: '아침' },
-                { id: 'lunchFields', label: '점심' },
-                { id: 'dinnerFields', label: '저녁' }
-            ];
+            // 각 섹션별로 필요한 필드 개수 계산
+            const sectionFieldCounts = [0, 0, 0]; // 아침, 점심, 저녁
             
-            // 기간목표에서 설정한 모든 날짜 데이터 가져오기
-            const allDates = Object.keys(dateFieldData).sort();
+            selectedDateData.forEach((item, index) => {
+                const sectionIndex = index % 3;
+                sectionFieldCounts[sectionIndex]++;
+            });
             
+            // 각 섹션에 필요한 만큼 필드 생성
             timeSections.forEach((section, sectionIndex) => {
-                const dateFieldsContainer = document.getElementById(section.id);
-                if (!dateFieldsContainer) return;
+                const dateBox = document.querySelector(`.daily-date-box[data-time="${section.time}"]`);
+                if (!dateBox) return;
                 
-                // 기존 필드 제거
-                dateFieldsContainer.innerHTML = '';
+                const fieldsContainer = dateBox.querySelector('.daily-date-box-fields');
+                if (!fieldsContainer) return;
                 
-                // 해당 시간대에 표시할 날짜 데이터 (순서대로 배분)
-                const datesForSection = allDates.filter((date, index) => index % 3 === sectionIndex);
+                const neededCount = sectionFieldCounts[sectionIndex];
                 
-                datesForSection.forEach((dateKey) => {
-                    const dateData = dateFieldData[dateKey];
-                    if (dateData && dateData.length > 0) {
-                        // 각 날짜의 첫 번째 할 일만 표시 (또는 모든 할 일 표시)
-                        dateData.forEach((item) => {
-                            const dateFieldItem = document.createElement('div');
-                            dateFieldItem.className = 'daily-date-field-item';
+                // 필요한 만큼 필드 생성 (기존 필드가 부족하면 추가)
+                // 매번 현재 필드 개수를 다시 확인
+                let currentCount = fieldsContainer.querySelectorAll('.daily-date-box-input-area').length;
+                while (currentCount < neededCount) {
+                    const newInputArea = document.createElement('div');
+                    newInputArea.className = 'daily-date-box-input-area';
+                    
+                    const newInput = document.createElement('input');
+                    newInput.type = 'text';
+                    newInput.className = 'daily-date-box-input';
+                    newInput.placeholder = '입력해 주세요';
+                    
+                    newInputArea.appendChild(newInput);
+                    fieldsContainer.appendChild(newInputArea);
+                    
+                    // 현재 개수 업데이트
+                    currentCount = fieldsContainer.querySelectorAll('.daily-date-box-input-area').length;
+                }
+            });
+            
+            // 데이터를 순서대로 아침 → 점심 → 저녁 순환 배치
+            selectedDateData.forEach((item, index) => {
+                const sectionIndex = index % 3; // 0: 아침, 1: 점심, 2: 저녁
+                const section = timeSections[sectionIndex];
+                
+                const dateBox = document.querySelector(`.daily-date-box[data-time="${section.time}"]`);
+                if (!dateBox) return;
+                
+                const fieldsContainer = dateBox.querySelector('.daily-date-box-fields');
+                if (!fieldsContainer) return;
+                
+                // 각 섹션 내에서의 필드 인덱스 계산
+                const fieldIndex = Math.floor(index / 3);
+                const allInputs = fieldsContainer.querySelectorAll('.daily-date-box-input');
+                
+                // 해당 입력 필드에 데이터 표시
+                if (allInputs[fieldIndex]) {
+                    allInputs[fieldIndex].value = item.text;
+                }
+            });
+            
+            // 이벤트 위임을 사용하여 모든 입력 필드에 이벤트 리스너 추가 (한 번만)
+            // 전역으로 한 번만 설정
+            if (!window.dailyFieldsEventListenersAdded) {
+                // 모든 필드 컨테이너에 이벤트 위임
+                document.addEventListener('blur', function(e) {
+                    if (e.target.classList.contains('daily-date-box-input')) {
+                        const value = e.target.value.trim();
+                        if (inlineSelectedDate && value !== '') {
+                            if (!dateFieldData[inlineSelectedDate]) {
+                                dateFieldData[inlineSelectedDate] = [];
+                            }
                             
-                            const dateBadgeEl = document.createElement('div');
-                            dateBadgeEl.className = 'daily-date-field-badge';
-                            dateBadgeEl.textContent = item.date;
-                            
-                            const inputArea = document.createElement('div');
-                            inputArea.className = 'daily-date-field-input-area';
-                            
-                            const input = document.createElement('input');
-                            input.type = 'text';
-                            input.className = 'daily-date-field-input';
-                            input.value = item.text;
-                            input.placeholder = '입력';
-                            
-                            inputArea.appendChild(input);
-                            dateFieldItem.appendChild(dateBadgeEl);
-                            dateFieldItem.appendChild(inputArea);
-                            dateFieldsContainer.appendChild(dateFieldItem);
-                        });
+                            const [y, m, d] = inlineSelectedDate.split('-');
+                            const existingIndex = dateFieldData[inlineSelectedDate].findIndex(item => item.text === value);
+                            if (existingIndex === -1) {
+                                dateFieldData[inlineSelectedDate].push({
+                                    text: value,
+                                    date: `${m}/${d}`
+                                });
+                            }
+                        }
+                    }
+                }, true);
+                
+                // 모든 추가 버튼에 이벤트 위임
+                document.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('daily-date-box-add-btn')) {
+                        const dateBox = e.target.closest('.daily-date-box');
+                        if (!dateBox) return;
+                        
+                        const fieldsContainer = dateBox.querySelector('.daily-date-box-fields');
+                        if (!fieldsContainer) return;
+                        
+                        const newInputArea = document.createElement('div');
+                        newInputArea.className = 'daily-date-box-input-area';
+                        
+                        const newInput = document.createElement('input');
+                        newInput.type = 'text';
+                        newInput.className = 'daily-date-box-input';
+                        newInput.placeholder = '입력해 주세요';
+                        
+                        newInputArea.appendChild(newInput);
+                        fieldsContainer.appendChild(newInputArea);
+                        
+                        // 포커스
+                        setTimeout(() => newInput.focus(), 10);
                     }
                 });
-            });
+                
+                window.dailyFieldsEventListenersAdded = true;
+            }
         }
         
         // 초기 상단 필드에 이벤트 리스너 추가
@@ -3688,36 +3724,7 @@
             fieldRow.appendChild(fieldInputArea);
             fieldContainer.appendChild(fieldRow);
 
-            // 3분할 계획법 영역 (아침/점심/저녁)
-            const timeAreas = document.createElement('div');
-            timeAreas.className = 'daily-time-areas';
-
-            const timeSections = [
-                { label: '아침', id: 'morningFields', time: 'morning' },
-                { label: '점심', id: 'lunchFields', time: 'lunch' },
-                { label: '저녁', id: 'dinnerFields', time: 'dinner' }
-            ];
-
-            timeSections.forEach((section) => {
-                const timeSection = document.createElement('div');
-                timeSection.className = 'daily-time-section';
-                timeSection.setAttribute('data-time', section.time);
-
-                const timeLabelEl = document.createElement('div');
-                timeLabelEl.className = 'daily-time-label';
-                timeLabelEl.textContent = section.label;
-
-                const dateFields = document.createElement('div');
-                dateFields.className = 'daily-date-fields';
-                dateFields.id = section.id;
-                // 날짜별 데이터는 loadDailyFieldsForDate 함수에서 동적으로 추가됨
-
-                timeSection.appendChild(timeLabelEl);
-                timeSection.appendChild(dateFields);
-                timeAreas.appendChild(timeSection);
-            });
-
-            fieldContainer.appendChild(timeAreas);
+            // 날짜별 박스 영역은 loadDailyFieldsForDate에서 동적으로 생성됨
 
             // afterElement 다음에 삽입
             if (afterElement && afterElement.nextSibling) {
@@ -3784,71 +3791,7 @@
             return fieldContainer;
         }
 
-        // 초기 일일목표 필드에 이벤트 리스너 추가
-        const dailyFieldsWrapper = document.getElementById('dailyFieldsWrapper');
-        if (dailyFieldsWrapper) {
-            const firstDailyField = dailyFieldsWrapper.querySelector('.daily-field-input');
-            const firstDailyContainer = dailyFieldsWrapper.querySelector('.daily-field-container');
-            const firstCheckbox = dailyFieldsWrapper.querySelector('.daily-checkbox');
-
-            if (firstCheckbox) {
-                firstCheckbox.addEventListener('click', function() {
-                    this.classList.toggle('checked');
-                    firstDailyContainer.classList.toggle('completed');
-                });
-            }
-
-            if (firstDailyField) {
-                let firstPreviousValue = '';
-
-                firstDailyField.addEventListener('focus', function() {
-                    firstPreviousValue = this.value.trim();
-                });
-
-                firstDailyField.addEventListener('blur', function() {
-                    const value = this.value.trim();
-                    
-                    // 일일목표에서 입력한 데이터를 기간목표 데이터에도 저장
-                    if (inlineSelectedDate && value !== '') {
-                        if (!dateFieldData[inlineSelectedDate]) {
-                            dateFieldData[inlineSelectedDate] = [];
-                        }
-                        
-                        // 같은 날짜에 같은 텍스트가 이미 있는지 확인
-                        const existingIndex = dateFieldData[inlineSelectedDate].findIndex(item => item.text === value);
-                        if (existingIndex === -1) {
-                            // 기존 항목이 없으면 추가
-                            const [y, m, d] = inlineSelectedDate.split('-');
-                            dateFieldData[inlineSelectedDate].push({
-                                text: value,
-                                date: `${m}/${d}`
-                            });
-                        } else if (firstPreviousValue !== value) {
-                            // 기존 항목이 있고 값이 변경되었으면 업데이트
-                            const [y, m, d] = inlineSelectedDate.split('-');
-                            dateFieldData[inlineSelectedDate][existingIndex].text = value;
-                        }
-                    }
-                    
-                    if (value !== '' && firstPreviousValue === '') {
-                        createDailyField(firstDailyContainer);
-                    }
-                });
-
-                firstDailyField.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        this.blur();
-                    }
-                });
-            }
-
-            // 초기 필드에 스와이프 기능 적용
-            if (firstDailyContainer) {
-                setupSwipeToDelete(firstDailyContainer, false);
-                firstDailyContainer.classList.add('swipe-initialized');
-            }
-        }
+        // 초기 일일목표 필드 이벤트는 각 박스의 입력 필드에서 처리됨
 
         // 스와이프 삭제 기능
         function setupSwipeToDelete(element, isBottomField = false) {
@@ -5152,6 +5095,8 @@
                 }
             });
         }
+        
+        // 초기 로드 시 이벤트 리스너는 전역 이벤트 위임으로 처리됨 (loadDailyFieldsForDate 함수 내에서 설정)
     </script>
 </body>
 </html>
