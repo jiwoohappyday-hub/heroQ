@@ -2298,15 +2298,15 @@
         
         .timer-target-time {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 16px;
+            font-size: 13px;
             font-weight: 600;
             color: #5B226B;
             text-align: center;
         }
-        
+
         .timer-total-time {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 16px;
+            font-size: 13px;
             font-weight: 600;
             color: #D9D9D9;
             text-align: center;
@@ -2322,7 +2322,7 @@
             justify-content: center;
             margin-top: 15px;
         }
-        
+
         .timer-circle-outer {
             box-sizing: border-box;
             position: absolute;
@@ -2340,31 +2340,31 @@
             border-radius: 50%;
             border: none;
             transition: background 0.3s ease;
-            background: conic-gradient(from -90deg, #FF3459 0%, #FF3459 100%, rgba(255, 235, 238, 0.5) 100%);
-            mask: radial-gradient(circle at center, transparent 127px, black 127px, black 140px, transparent 140px);
-            -webkit-mask: radial-gradient(circle at center, transparent 127px, black 127px, black 140px, transparent 140px);
+            background: conic-gradient(from 0deg, #FF3459 0%, #FF3459 100%, rgba(255, 235, 238, 0.5) 100%);
+            mask: radial-gradient(circle at center, transparent 126px, black 128px, black 139px, transparent 141px);
+            -webkit-mask: radial-gradient(circle at center, transparent 126px, black 128px, black 139px, transparent 141px);
             z-index: 2;
         }
         
         .timer-circle-progress-dot {
             position: absolute;
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             background: #FF3459;
-            border: 3px solid #fff;
+            border: none;
             border-radius: 50%;
-            z-index: 10;
+            z-index: 30;
             transform: translate(-50%, -50%);
             left: 50%;
             top: 6.5px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            display: none;
+            display: block;
         }
-        
+
         .timer-center-image {
             position: absolute;
-            top: 55%;
-            left: 50%;
+            top: 60%;
+            left: 52%;
             transform: translate(-50%, -50%);
             z-index: 20;
             display: flex;
@@ -2373,9 +2373,39 @@
         }
 
         .timer-center-image img {
-            width: 300px;
+            width: 255px;
             height: auto;
             object-fit: contain;
+        }
+
+        .timer-top-bubble {
+            position: absolute;
+            top: 51px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 16px 32px;
+            z-index: 25;
+            box-shadow: 0 4px 12px rgba(255, 155, 173, 0.4);
+            font-family: 'Moneygraph', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4A0F50;
+            white-space: nowrap;
+        }
+
+        .timer-top-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid #ffffff;
         }
 
         .timer-points-box {
@@ -2388,23 +2418,13 @@
             border-radius: 16px;
             padding: 10px 14px;
             position: absolute;
-            bottom: -18px;
+            bottom: -12px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 25;
             box-shadow: 0 4px 12px rgba(255, 155, 173, 0.4);
         }
 
-        .timer-circle-mask {
-            position: absolute;
-            bottom: -20px;
-            left: -20px;
-            right: -20px;
-            height: 60px;
-            background: #FFEBEE;
-            border-radius: 20px 20px 0 0;
-            z-index: 15;
-        }
 
         .timer-points-box::after {
             content: '';
@@ -2936,7 +2956,9 @@
                         <div class="timer-circle-outer"></div>
                         <div class="timer-circle-inner" id="timerCircleInner"></div>
                         <div class="timer-circle-progress-dot" id="timerProgressDot"></div>
-                        <div class="timer-circle-mask"></div>
+                        <div class="timer-top-bubble" id="timerTopBubble">
+                            <span>우리 열심히 달려보자!</span>
+                        </div>
                         <div class="timer-center-image">
                             <img src="https://i.imgur.com/ngjVd36.png" alt="timer image">
                         </div>
@@ -2947,8 +2969,8 @@
                     </div>
                     <div class="timer-controls">
                         <button class="timer-btn timer-complete-btn" id="timerCompleteBtn" style="display: none;">인증하기</button>
-                        <button class="timer-btn timer-start-btn" id="timerStartBtn">시작하기</button>
-                        <button class="timer-btn timer-pause-btn" id="timerPauseBtn" style="display: none;">중단하기</button>
+                        <button class="timer-btn timer-start-btn" id="timerStartBtn">인증하기</button>
+                        <button class="timer-btn timer-pause-btn" id="timerPauseBtn">중단하기</button>
                     </div>
                 </div>
             </div>
@@ -6025,8 +6047,6 @@
                 const timerStartBtn = document.getElementById('timerStartBtn');
                 const timerPauseBtn = document.getElementById('timerPauseBtn');
                 const timerCompleteBtn = document.getElementById('timerCompleteBtn');
-                if (timerStartBtn) timerStartBtn.style.display = 'block';
-                if (timerPauseBtn) timerPauseBtn.style.display = 'none';
                 if (timerCompleteBtn) timerCompleteBtn.style.display = 'none';
             }
         }
@@ -6118,6 +6138,7 @@
                 if (!timerRunning) {
                     // 카운트다운 타이머로 변경
                     timerRunning = true;
+                    startBubbleRotation(); // 말풍선 텍스트 변경 시작
                     timerInterval = setInterval(function() {
                         if (timerSeconds > 0) {
                             timerSeconds--;
@@ -6130,11 +6151,9 @@
                         }
                     }, 1000);
                     
-                    // 시작 버튼 숨기고 일시정지 버튼 표시
-                    timerStartBtn.style.display = 'none';
+                    // 버튼 상태 업데이트 (둘 다 표시 유지)
                     const timerPauseBtn = document.getElementById('timerPauseBtn');
                     const timerCompleteBtn = document.getElementById('timerCompleteBtn');
-                    if (timerPauseBtn) timerPauseBtn.style.display = 'block';
                     if (timerCompleteBtn) timerCompleteBtn.style.display = 'none';
                 }
             });
@@ -6147,6 +6166,7 @@
                 timerInterval = null;
             }
             timerRunning = false;
+            stopBubbleRotation(); // 말풍선 텍스트 변경 중지
             
             // 완료도 계산 및 포인트 획득
             if (targetTimeSeconds > 0) {
@@ -6243,10 +6263,7 @@
                         timerInterval = null;
                     }
                     
-                    // 일시정지 버튼 숨기고 시작 버튼 표시
-                    timerPauseBtn.style.display = 'none';
-                    const timerStartBtn = document.getElementById('timerStartBtn');
-                    if (timerStartBtn) timerStartBtn.style.display = 'block';
+                    // 버튼 상태 유지 (둘 다 표시)
                 }
             });
         }
@@ -6295,11 +6312,7 @@
                 }
                 updateTimerDisplay();
                 
-                // 시작 버튼 표시, 일시정지 버튼 숨김
-                const timerStartBtn = document.getElementById('timerStartBtn');
-                const timerPauseBtn = document.getElementById('timerPauseBtn');
-                if (timerStartBtn) timerStartBtn.style.display = 'block';
-                if (timerPauseBtn) timerPauseBtn.style.display = 'none';
+                // 버튼 상태 유지 (둘 다 표시)
             });
         }
         
@@ -6337,32 +6350,79 @@
                 const angle = (remainingProgress * 360) - 90; // -90도에서 시작 (7시 방향, 하단)
                 
                 // 남은 시간은 핑크색, 소요된 시간은 연핑크색으로 표시
-                timerCircleInner.style.background = `conic-gradient(from -90deg, #FF3459 0%, #FF3459 ${remainingPercentage}%, rgba(255, 235, 238, 0.5) ${remainingPercentage}%, rgba(255, 235, 238, 0.5) 100%)`;
+                timerCircleInner.style.background = `conic-gradient(from 0deg, #FF3459 0%, #FF3459 ${remainingPercentage}%, rgba(255, 235, 238, 0.5) ${remainingPercentage}%)`;
                 
                 // 진행 끝 점 위치 업데이트 (핑크색 원의 끝 부분)
                 if (timerProgressDot) {
-                    const radius = 133.5; // 테두리 중간 (280/2 - 13/2)
+                    const radius = 133.5; // 테두리 중간
                     const centerX = 140; // wrapper 중심 (280 / 2)
                     const centerY = 140; // wrapper 중심 (280 / 2)
-                    const radian = (angle * Math.PI) / 180;
-                    const x = centerX + radius * Math.cos(radian);
-                    const y = centerY + radius * Math.sin(radian);
+                    // conic-gradient 12시 방향에서 시작
+                    const angleDeg = remainingProgress * 360;
+                    const radian = angleDeg * (Math.PI / 180);
+                    const x = centerX + radius * Math.sin(radian);
+                    const y = centerY - radius * Math.cos(radian);
 
                     timerProgressDot.style.left = x + 'px';
                     timerProgressDot.style.top = y + 'px';
-                    // 타이머 실행 중이고 남은 시간이 있을 때만 표시
-                    timerProgressDot.style.display = (timerRunning && remainingProgress > 0.01 && remainingProgress < 0.99) ? 'block' : 'none';
+                    // 항상 표시
+                    timerProgressDot.style.display = 'block';
                 }
             } else {
                 if (timerCircleInner) {
-                    timerCircleInner.style.background = 'conic-gradient(from -90deg, #FF3459 0%, #FF3459 100%, rgba(255, 235, 238, 0.5) 100%)';
+                    timerCircleInner.style.background = 'conic-gradient(from 0deg, #FF3459 0%, #FF3459 100%, rgba(255, 235, 238, 0.5) 100%)';
                 }
                 if (timerProgressDot) {
-                    timerProgressDot.style.display = 'none';
+                    // 100% 상태일 때 점 위치 (12시 방향, 시작점)
+                    const radius = 133.5;
+                    const centerX = 140;
+                    const centerY = 140;
+                    const angleDeg = 360; // 100% = 12시 방향
+                    const radian = angleDeg * (Math.PI / 180);
+                    const x = centerX + radius * Math.sin(radian);
+                    const y = centerY - radius * Math.cos(radian);
+                    timerProgressDot.style.left = x + 'px';
+                    timerProgressDot.style.top = y + 'px';
+                    timerProgressDot.style.display = 'block';
                 }
             }
         }
-        
+
+        // 말풍선 텍스트 변경 (10분마다)
+        const bubbleMessages = [
+            "우리 열심히 달려보자!",
+            "잘하고 있어!",
+            "조금만 더 힘내자!",
+            "넌 할 수 있어!",
+            "집중 집중!",
+            "대단해, 계속 가자!",
+            "포기하지 마!",
+            "거의 다 왔어!"
+        ];
+        let currentBubbleIndex = 0;
+        let bubbleChangeInterval = null;
+
+        function changeBubbleText() {
+            const bubble = document.getElementById('timerTopBubble');
+            if (bubble) {
+                currentBubbleIndex = (currentBubbleIndex + 1) % bubbleMessages.length;
+                bubble.querySelector('span').textContent = bubbleMessages[currentBubbleIndex];
+            }
+        }
+
+        function startBubbleRotation() {
+            if (!bubbleChangeInterval) {
+                bubbleChangeInterval = setInterval(changeBubbleText, 10 * 60 * 1000); // 10분
+            }
+        }
+
+        function stopBubbleRotation() {
+            if (bubbleChangeInterval) {
+                clearInterval(bubbleChangeInterval);
+                bubbleChangeInterval = null;
+            }
+        }
+
         // 마이페이지 관련 이벤트 핸들러
         const myPageNavItem = document.querySelector('.nav-item[data-page="my"]');
         if (myPageNavItem) {
