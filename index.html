@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>d:\heroq\index22.html
+<head>
     <meta charset="UTF-8">
 
     
@@ -249,7 +249,7 @@
             padding: 20px;
             margin-bottom: 18.9px;
             z-index: 0;
-            transition: background 0.3s ease;
+            transition: background 0.3s ease, height 0.3s ease;
         }
         
         /* 한 줄 다짐 위 배경 박스 */
@@ -287,7 +287,7 @@
             left: 0;
             right: 0;
             z-index: 20;
-            padding: 0 20px;
+            padding: 4px 20px;
             overflow: visible;
             pointer-events: auto;
         }
@@ -297,7 +297,7 @@
             justify-content: flex-start;
             align-items: center;
             gap: 6px;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             padding: 0;
         }
         
@@ -335,9 +335,9 @@
             justify-content: center;
             align-items: center;
             gap: 15px;
-            padding: 0;
+            padding: 6px 0;
             overflow-x: visible;
-            overflow-y: hidden;
+            overflow-y: visible;
         }
         
         #weekCalendarInGoalCard .inline-day {
@@ -379,7 +379,11 @@
             font-weight: 700;
             box-shadow: 0 2px 8px rgba(255, 52, 89, 0.3);
             transform: scale(1.05);
-            border-radius: 10px;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            min-height: 32px;
         }
 
         .goal-text-display {
@@ -465,15 +469,30 @@
         #dailyGoalContent.white-box-content {
             z-index: 25;
             overflow: visible;
-            padding: 20px;
+            padding: 20px 20px 34px 20px;
+            min-height: auto;
+            margin-top: 49px;
+        }
+        
+        /* 달력 마지막 줄 아래 여백을 완료도 위쪽 여백과 동일하게 */
+        #dailyGoalContent .inline-calendar-days {
+            margin-bottom: 0;
+            padding-bottom: 0;
         }
         
         #dailyGoalContent .inline-calendar {
             width: 100%;
             padding: 0;
-            margin-top: 25px;
+            margin-top: 12px;
+            margin-bottom: 0;
             position: relative;
             z-index: 1;
+        }
+        
+        #dailyGoalContent .inline-calendar-days {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 0;
         }
         
         #dailyGoalContent .inline-calendar-days {
@@ -571,6 +590,11 @@
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: 12px;
             font-weight: 300;
+        }
+        
+        /* 일일목표 화면에서 완료도 텍스트 숨기기 (패널이 올라갔을 때만 표시) */
+        #dailyGoalContent .completion-text {
+            display: none;
         }
         
         .field-container {
@@ -1025,6 +1049,7 @@
         
         #dailyGoalContent .inline-calendar-header {
             padding: 0;
+            margin-bottom: 32px;
         }
 
         .inline-calendar-title {
@@ -1107,9 +1132,10 @@
             background: #FFC0CC;
             color: #191f28;
             border-radius: 8px;
-            padding: 4px 0;
+            padding: 4px 4px;
             font-weight: 700;
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            display: inline-block;
         }
 
         .inline-calendar-days {
@@ -1270,6 +1296,12 @@
             border-radius: 20px 20px 0 0;
             display: flex;
             flex-direction: column;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+        
+        .swipe-up-content::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
         }
         
         .swipe-up-panel.collapsed .swipe-up-content {
@@ -1312,6 +1344,12 @@
             margin: 0;
             min-height: 0;
             overflow-y: auto;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+        
+        .daily-fields-wrapper::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
         }
 
         .daily-field-container {
@@ -4475,6 +4513,9 @@
             // 카드 배경색을 보라색으로
             if (goalCardContent) {
                 goalCardContent.style.background = '#4A0F50';
+                goalCardContent.style.height = '520px';
+                goalCardContent.style.minHeight = '';
+                goalCardContent.style.paddingBottom = '';
             }
 
             // 패널 숨김
@@ -4524,9 +4565,24 @@
             dailyGoalContent.style.display = 'block';
             pinkBtn.classList.add('active');
             yellowBtn.classList.remove('active');
-            // 카드 배경색을 핑크색으로
+            // 카드 배경색을 핑크색으로, 높이도 자동으로 조정
             if (goalCardContent) {
                 goalCardContent.style.background = '#FF9BAD';
+                goalCardContent.style.height = 'auto';
+                goalCardContent.style.minHeight = 'auto';
+                goalCardContent.style.paddingBottom = '8px';
+            }
+            
+            // 일일목표 화면에서 흰색 박스 안의 완료도 텍스트 숨기기 (패널이 올라갔을 때만 표시)
+            const dailyCompletionText = dailyGoalContent ? dailyGoalContent.querySelector('.completion-text') : null;
+            if (dailyCompletionText) {
+                dailyCompletionText.style.display = 'none';
+            }
+            
+            // 패널이 내려갔을 때 완료도 텍스트 숨기기 (swipe-up-completion)
+            const swipeUpCompletion = document.getElementById('swipeUpCompletion');
+            if (swipeUpCompletion) {
+                swipeUpCompletion.style.display = 'none';
             }
 
             // 패널 표시 및 이전 상태 복원
@@ -4542,6 +4598,13 @@
                     // 확장 상태 복원
                     swipeUpPanel.classList.remove('collapsed');
                     swipeUpPanel.style.transform = 'translateX(-50%) translateY(0)';
+                    
+                    // 일일목표 화면일 때 핑크색 박스 높이 복구 (패널이 확장된 상태)
+                    if (goalCardContent) {
+                        goalCardContent.style.height = '520px';
+                        goalCardContent.style.minHeight = '';
+                        goalCardContent.style.paddingBottom = '20px';
+                    }
 
                     // 주간 달력 표시, 한 줄 다짐 숨김
                     if (goalTextWrapper) {
@@ -4589,6 +4652,13 @@
                 } else {
                     // 축소 상태
                     swipeUpPanel.classList.add('collapsed');
+                    
+                    // 일일목표 화면일 때 핑크색 박스 높이 줄이기 (패널이 축소된 상태)
+                    if (goalCardContent) {
+                        goalCardContent.style.height = 'auto';
+                        goalCardContent.style.minHeight = 'auto';
+                        goalCardContent.style.paddingBottom = '8px';
+                    }
 
                     // 한 줄 다짐 표시, 주간 달력 숨김
                     if (goalTextWrapper) {
@@ -5066,6 +5136,15 @@
                         swipeUpPanel.style.transform = 'translateX(-50%) translateY(0)';
                         swipeUpPanel.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
                         
+                        // 일일목표 화면일 때 핑크색 박스 높이 복구
+                        const pinkBtn = document.getElementById('pink-btn');
+                        const goalCardContent = document.querySelector('.goal-card-content');
+                        if (pinkBtn && pinkBtn.classList.contains('active') && goalCardContent) {
+                            goalCardContent.style.height = '520px';
+                            goalCardContent.style.minHeight = '';
+                            goalCardContent.style.paddingBottom = '20px';
+                        }
+                        
                         // 한 줄 다짐 숨기고 주간 달력 표시
                         const goalTextWrapper = document.getElementById('goalTextWrapper');
                         const weekCalendarGoal = document.getElementById('weekCalendarInGoalCard');
@@ -5079,6 +5158,18 @@
                         // 흰색 박스 숨기기
                         if (dailyGoalContent) {
                             dailyGoalContent.style.display = 'none';
+                        }
+                        
+                        // 패널이 올라갔을 때 완료도 텍스트 표시 (swipe-up-completion)
+                        const swipeUpCompletion = document.getElementById('swipeUpCompletion');
+                        if (swipeUpCompletion) {
+                            swipeUpCompletion.style.display = 'block';
+                        }
+                        
+                        // 일일목표 화면에서 흰색 박스 안의 완료도 텍스트 숨기기
+                        const dailyCompletionText = dailyGoalContent ? dailyGoalContent.querySelector('.completion-text') : null;
+                        if (dailyCompletionText) {
+                            dailyCompletionText.style.display = 'none';
                         }
 
                         // 주간 달력으로 전환
@@ -5340,6 +5431,15 @@
                         swipeUpPanel.style.transform = 'translateX(-50%) translateY(0)';
                         swipeUpPanel.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
                         
+                        // 일일목표 화면일 때 핑크색 박스 높이 복구
+                        const pinkBtnAuto = document.getElementById('pink-btn');
+                        const goalCardContentAuto = document.querySelector('.goal-card-content');
+                        if (pinkBtnAuto && pinkBtnAuto.classList.contains('active') && goalCardContentAuto) {
+                            goalCardContentAuto.style.height = '520px';
+                            goalCardContentAuto.style.minHeight = '';
+                            goalCardContentAuto.style.paddingBottom = '20px';
+                        }
+                        
                         // 패널 확장 시 버튼 위치 조정
                         const yellowBtn = document.getElementById('yellow-btn');
                         const pinkBtn = document.getElementById('pink-btn');
@@ -5364,6 +5464,18 @@
                         // 흰색 박스 숨기기
                         if (dailyGoalContentPanel) {
                             dailyGoalContentPanel.style.display = 'none';
+                        }
+                        
+                        // 패널이 올라갔을 때 완료도 텍스트 표시 (swipe-up-completion)
+                        const swipeUpCompletionPanel = document.getElementById('swipeUpCompletion');
+                        if (swipeUpCompletionPanel) {
+                            swipeUpCompletionPanel.style.display = 'block';
+                        }
+                        
+                        // 일일목표 화면에서 흰색 박스 안의 완료도 텍스트 숨기기
+                        const dailyCompletionTextPanel = dailyGoalContentPanel ? dailyGoalContentPanel.querySelector('.completion-text') : null;
+                        if (dailyCompletionTextPanel) {
+                            dailyCompletionTextPanel.style.display = 'none';
                         }
 
                         // 주간 달력으로 전환
@@ -5736,6 +5848,15 @@
                     swipeUpPanel.style.transform = 'translateX(-50%) translateY(0)';
                     swipeUpPanel.classList.remove('collapsed');
                     
+                    // 일일목표 화면일 때 핑크색 박스 높이 복구
+                    const pinkBtnSwipe = document.getElementById('pink-btn');
+                    const goalCardContentSwipe = document.querySelector('.goal-card-content');
+                    if (pinkBtnSwipe && pinkBtnSwipe.classList.contains('active') && goalCardContentSwipe) {
+                        goalCardContentSwipe.style.height = '520px';
+                        goalCardContentSwipe.style.minHeight = '';
+                        goalCardContentSwipe.style.paddingBottom = '20px';
+                    }
+                    
                     // 패널 확장 시 버튼 위치 조정
                     const yellowBtn = document.getElementById('yellow-btn');
                     const pinkBtn = document.getElementById('pink-btn');
@@ -5760,6 +5881,18 @@
                     // 흰색 박스 숨기기
                     if (dailyGoalContentSwipe) {
                         dailyGoalContentSwipe.style.display = 'none';
+                    }
+                    
+                    // 패널이 올라갔을 때 완료도 텍스트 표시 (swipe-up-completion)
+                    const swipeUpCompletionSwipe = document.getElementById('swipeUpCompletion');
+                    if (swipeUpCompletionSwipe) {
+                        swipeUpCompletionSwipe.style.display = 'block';
+                    }
+                    
+                    // 일일목표 화면에서 흰색 박스 안의 완료도 텍스트 숨기기
+                    const dailyCompletionTextSwipe = dailyGoalContentSwipe ? dailyGoalContentSwipe.querySelector('.completion-text') : null;
+                    if (dailyCompletionTextSwipe) {
+                        dailyCompletionTextSwipe.style.display = 'none';
                     }
 
                     // white-box-content 안의 월 달력 숨김
@@ -5825,6 +5958,15 @@
                     swipeUpPanel.style.transform = `translateX(-50%) translateY(${collapsedY}px)`;
                     swipeUpPanel.classList.add('collapsed');
                     
+                    // 일일목표 화면일 때 핑크색 박스 높이 다시 줄이기
+                    const pinkBtnCollapse = document.getElementById('pink-btn');
+                    const goalCardContentCollapse = document.querySelector('.goal-card-content');
+                    if (pinkBtnCollapse && pinkBtnCollapse.classList.contains('active') && goalCardContentCollapse) {
+                        goalCardContentCollapse.style.height = 'auto';
+                        goalCardContentCollapse.style.minHeight = 'auto';
+                        goalCardContentCollapse.style.paddingBottom = '8px';
+                    }
+                    
                     // 패널 축소 시 버튼 위치 원래대로 복원
                     const yellowBtn = document.getElementById('yellow-btn');
                     const pinkBtn = document.getElementById('pink-btn');
@@ -5849,6 +5991,19 @@
                     if (dailyGoalContentCollapse) {
                         dailyGoalContentCollapse.style.display = 'block';
                     }
+                    
+                    // 패널이 내려갔을 때 완료도 텍스트 숨기기 (swipe-up-completion)
+                    const swipeUpCompletionCollapse = document.getElementById('swipeUpCompletion');
+                    if (swipeUpCompletionCollapse) {
+                        swipeUpCompletionCollapse.style.display = 'none';
+                    }
+                    
+                    // 일일목표 화면에서 흰색 박스 안의 완료도 텍스트 숨기기 (패널이 올라갔을 때만 표시)
+                    const dailyCompletionTextCollapse = dailyGoalContentCollapse ? dailyGoalContentCollapse.querySelector('.completion-text') : null;
+                    if (dailyCompletionTextCollapse) {
+                        dailyCompletionTextCollapse.style.display = 'none';
+                    }
+                    
                     // 월 달력 표시
                     const inlineCalendarCollapse = document.getElementById('inlineCalendar');
                     if (inlineCalendarCollapse) {
@@ -5984,6 +6139,15 @@
                 } else {
                     // 축소됨 → 월간 달력으로 전환
                     
+                    // 일일목표 화면일 때 핑크색 박스 높이 다시 줄이기
+                    const pinkBtnHandle = document.getElementById('pink-btn');
+                    const goalCardContentHandle = document.querySelector('.goal-card-content');
+                    if (pinkBtnHandle && pinkBtnHandle.classList.contains('active') && goalCardContentHandle) {
+                        goalCardContentHandle.style.height = 'auto';
+                        goalCardContentHandle.style.minHeight = 'auto';
+                        goalCardContentHandle.style.paddingBottom = '8px';
+                    }
+                    
                     // 패널 축소 시 버튼 위치 원래대로 복원
                     const yellowBtn = document.getElementById('yellow-btn');
                     const pinkBtn = document.getElementById('pink-btn');
@@ -6009,6 +6173,18 @@
                     // 흰색 박스 표시
                     if (dailyGoalContentHandle) {
                         dailyGoalContentHandle.style.display = 'block';
+                    }
+                    
+                    // 패널이 내려갔을 때 완료도 텍스트 숨기기 (swipe-up-completion)
+                    const swipeUpCompletionHandle = document.getElementById('swipeUpCompletion');
+                    if (swipeUpCompletionHandle) {
+                        swipeUpCompletionHandle.style.display = 'none';
+                    }
+                    
+                    // 일일목표 화면에서 흰색 박스 안의 완료도 텍스트 숨기기 (패널이 올라갔을 때만 표시)
+                    const dailyCompletionTextHandle = dailyGoalContentHandle ? dailyGoalContentHandle.querySelector('.completion-text') : null;
+                    if (dailyCompletionTextHandle) {
+                        dailyCompletionTextHandle.style.display = 'none';
                     }
                     // 월 달력 표시
                     if (inlineCalendarHandle) {
