@@ -1106,7 +1106,7 @@
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 0;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             padding: 0;
         }
         
@@ -1132,10 +1132,11 @@
             background: #FFC0CC;
             color: #191f28;
             border-radius: 8px;
-            padding: 4px 4px;
+            padding: 4px 2px;
             font-weight: 700;
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
             display: inline-block;
+            box-sizing: border-box;
         }
 
         .inline-calendar-days {
@@ -1144,6 +1145,9 @@
             gap: 0;
             row-gap: 4px;
             padding: 0;
+            max-width: 280px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         #dailyGoalContent .inline-calendar-days {
@@ -2633,21 +2637,22 @@
             width: 90%;
             max-width: 320px;
             background: #ffffff;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border-radius: 20px;
+            padding: 28px 24px 24px 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
         }
         
         .timer-pause-warning-title {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
             color: #191f28;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             text-align: center;
             cursor: pointer;
             user-select: none;
             transition: opacity 0.2s;
+            letter-spacing: -0.3px;
         }
         
         .timer-pause-warning-title:hover {
@@ -2663,17 +2668,21 @@
             font-size: 15px;
             font-weight: 400;
             color: #666;
-            line-height: 1.5;
-            margin-bottom: 20px;
+            line-height: 1.6;
+            margin-bottom: 24px;
             text-align: center;
+            padding: 0 4px;
+            letter-spacing: -0.2px;
         }
         
         .timer-pause-warning-checkbox-container {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 20px;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 24px;
             cursor: pointer;
+            padding: 8px 0;
         }
         
         .timer-pause-warning-checkbox {
@@ -2709,23 +2718,25 @@
             color: #666;
             cursor: pointer;
             user-select: none;
+            letter-spacing: -0.2px;
         }
         
         .timer-pause-warning-buttons {
             display: flex;
-            gap: 8px;
+            gap: 10px;
         }
         
         .timer-pause-warning-btn {
             flex: 1;
-            height: 48px;
-            border-radius: 12px;
+            height: 50px;
+            border-radius: 14px;
             border: none;
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            letter-spacing: -0.2px;
         }
         
         .timer-pause-warning-btn-cancel {
@@ -6370,6 +6381,7 @@
                     // 선택된 시간으로 타이머 시작
                     timerSeconds = selectedHours * 3600 + selectedMinutes * 60 + selectedSeconds;
                     targetTimeSeconds = timerSeconds; // 목표 시간 저장
+                    initialTimerSeconds = timerSeconds; // 초기 시간 저장
                     
                     if (timerSeconds <= 0) {
                         alert('시간을 설정해주세요.');
@@ -6508,6 +6520,9 @@
         if (timerStartBtn) {
             timerStartBtn.addEventListener('click', function() {
                 if (!timerRunning) {
+                    // 초기 시간 저장 (타이머 시작 시점)
+                    initialTimerSeconds = timerSeconds;
+                    
                     // 카운트다운 타이머로 변경
                     timerRunning = true;
                     startBubbleRotation(); // 말풍선 텍스트 변경 시작
@@ -6540,6 +6555,12 @@
             timerRunning = false;
             stopBubbleRotation(); // 말풍선 텍스트 변경 중지
             
+            // 목표 시간 달성 시 메시지 표시
+            const bubble = document.getElementById('timerTopBubble');
+            if (bubble && targetTimeSeconds > 0) {
+                bubble.querySelector('span').textContent = "목표 시간이 끝나버렸어!";
+            }
+            
             // 완료도 계산 및 포인트 획득
             if (targetTimeSeconds > 0) {
                 // 완료도는 목표 시간 대비 완료된 시간의 비율
@@ -6562,6 +6583,7 @@
             }
             
             timerSeconds = 0;
+            initialTimerSeconds = 0;
             updateTimerDisplay();
             
             // 인증하기 버튼 표시, 시작/일시정지 버튼 숨김
@@ -6657,6 +6679,7 @@
                 }
                 // 타이머 초기화
                 timerSeconds = 0;
+                initialTimerSeconds = 0;
                 updateTimerDisplay();
                 timerScreen.style.display = 'none';
             }
@@ -6723,6 +6746,11 @@
                     stopBubbleRotation(); // 말풍선 텍스트 변경 중지
                 } else {
                     // 타이머 재개
+                    // 초기 시간이 저장되지 않았다면 현재 시간을 초기값으로 설정
+                    if (initialTimerSeconds === 0) {
+                        initialTimerSeconds = timerSeconds;
+                    }
+                    
                     timerRunning = true;
                     startBubbleRotation(); // 말풍선 텍스트 변경 시작
                     timerInterval = setInterval(function() {
@@ -6825,6 +6853,7 @@
                 
                 // 타이머 초기화
                 timerSeconds = 0;
+                initialTimerSeconds = 0;
                 timerRunning = false;
                 if (timerInterval) {
                     clearInterval(timerInterval);
@@ -6838,6 +6867,7 @@
         if (timerResetBtn) {
             timerResetBtn.addEventListener('click', function() {
                 timerSeconds = 0;
+                initialTimerSeconds = 0;
                 timerRunning = false;
                 if (timerInterval) {
                     clearInterval(timerInterval);
@@ -6872,12 +6902,28 @@
             // 포인트 표시 업데이트
             updateTimerPointsDisplay();
             
+            // 말풍선 메시지 업데이트 (목표 시간 달성/초과 여부 확인)
+            const bubble = document.getElementById('timerTopBubble');
+            if (bubble && targetTimeSeconds > 0 && initialTimerSeconds > 0 && timerRunning) {
+                const elapsedSeconds = initialTimerSeconds - timerSeconds;
+                
+                // 목표 시간을 달성했을 때 (정확히 목표 시간에 도달)
+                if (elapsedSeconds >= targetTimeSeconds && timerSeconds === 0) {
+                    bubble.querySelector('span').textContent = "목표 시간이 끝나버렸어!";
+                }
+                // 목표 시간을 초과했을 때 (추가 집계되는 시간)
+                else if (elapsedSeconds > targetTimeSeconds) {
+                    bubble.querySelector('span').textContent = "시간이 길어지고 있어 서두르자";
+                }
+            }
+            
             // 뽀모도로 타이머 진행도 업데이트 (남은 시간 표시)
             const timerCircleInner = document.getElementById('timerCircleInner');
             const timerProgressDot = document.getElementById('timerProgressDot');
             
-            if (timerCircleInner && targetTimeSeconds > 0) {
-                const remainingProgress = timerSeconds / targetTimeSeconds; // 남은 시간 비율
+            if (timerCircleInner && targetTimeSeconds > 0 && initialTimerSeconds > 0) {
+                const elapsedSeconds = initialTimerSeconds - timerSeconds;
+                const remainingProgress = Math.min(1, timerSeconds / targetTimeSeconds); // 남은 시간 비율 (최대 1로 제한)
                 const remainingPercentage = remainingProgress * 100;
                 const usedPercentage = 100 - remainingPercentage; // 소요된 시간 비율
                 const angle = (remainingProgress * 360) - 90; // -90도에서 시작 (7시 방향, 하단)
@@ -6926,21 +6972,36 @@
             "우리 열심히 달려보자!",
             "잘하고 있어!",
             "조금만 더 힘내자!",
-            "넌 할 수 있어!",
-            "집중 집중!",
-            "대단해, 계속 가자!",
-            "포기하지 마!",
-            "거의 다 왔어!"
+            "넌 할 수 있어!"
         ];
         let currentBubbleIndex = 0;
         let bubbleChangeInterval = null;
+        let initialTimerSeconds = 0; // 타이머 시작 시 초기 시간 저장
 
         function changeBubbleText() {
             const bubble = document.getElementById('timerTopBubble');
-            if (bubble) {
-                currentBubbleIndex = (currentBubbleIndex + 1) % bubbleMessages.length;
-                bubble.querySelector('span').textContent = bubbleMessages[currentBubbleIndex];
+            if (!bubble) return;
+            
+            // 목표 시간 달성 여부 확인
+            if (targetTimeSeconds > 0) {
+                const elapsedSeconds = initialTimerSeconds - timerSeconds;
+                
+                // 목표 시간을 달성했을 때
+                if (elapsedSeconds >= targetTimeSeconds) {
+                    bubble.querySelector('span').textContent = "목표 시간이 끝나버렸어!";
+                    return;
+                }
+                
+                // 목표 시간을 초과했을 때 (추가 집계되는 시간)
+                if (elapsedSeconds > targetTimeSeconds) {
+                    bubble.querySelector('span').textContent = "시간이 길어지고 있어 서두르자";
+                    return;
+                }
             }
+            
+            // 일반 메시지 순환 (목표 시간 이내일 때만)
+            currentBubbleIndex = (currentBubbleIndex + 1) % bubbleMessages.length;
+            bubble.querySelector('span').textContent = bubbleMessages[currentBubbleIndex];
         }
 
         function startBubbleRotation() {
