@@ -2152,15 +2152,15 @@
             justify-content: flex-start;
             height: 100%;
             width: 100%;
-            overflow-y: auto;
-            scroll-snap-type: y mandatory;
-            scroll-behavior: smooth;
+            overflow-y: scroll;
             scrollbar-width: none;
             -ms-overflow-style: none;
             -webkit-overflow-scrolling: touch;
-            padding: 76px 0;
+            padding: 66px 0;
             position: relative;
-            overscroll-behavior: contain;
+            overscroll-behavior-y: contain;
+            touch-action: pan-y;
+            will-change: scroll-position;
         }
 
         .time-picker-values::-webkit-scrollbar {
@@ -2179,14 +2179,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            scroll-snap-align: center;
-            scroll-snap-stop: always;
-            transition: color 0.1s ease, font-weight 0.1s ease;
             cursor: default;
             pointer-events: none;
             width: 100%;
             flex-shrink: 0;
-            will-change: color, font-weight;
         }
 
         .time-picker-value.selected {
@@ -2319,34 +2315,124 @@
         
         .timer-display-wrapper {
             position: relative;
-            width: 346px;
-            height: 312px;
+            width: 280px;
+            height: 280px;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-top: 15px;
         }
         
         .timer-circle-outer {
             box-sizing: border-box;
             position: absolute;
-            width: 346px;
-            height: 312px;
+            width: 280px;
+            height: 280px;
             border: 13px solid #FFEBEE;
             border-radius: 50%;
-            filter: blur(2.8px);
         }
-        
+
         .timer-circle-inner {
             box-sizing: border-box;
             position: absolute;
-            width: 289.5px;
-            height: 312px;
-            border: 13px solid #FF3459;
+            width: 280px;
+            height: 280px;
             border-radius: 50%;
+            border: none;
             transition: background 0.3s ease;
-            background: conic-gradient(from -90deg, #FF3459 0%, #FF3459 0%, transparent 0%);
-            mask: radial-gradient(circle, transparent calc(50% - 6.5px), black calc(50% - 6.5px), black calc(50% + 6.5px), transparent calc(50% + 6.5px));
-            -webkit-mask: radial-gradient(circle, transparent calc(50% - 6.5px), black calc(50% - 6.5px), black calc(50% + 6.5px), transparent calc(50% + 6.5px));
+            background: conic-gradient(from -90deg, #FF3459 0%, #FF3459 100%, rgba(255, 235, 238, 0.5) 100%);
+            mask: radial-gradient(circle at center, transparent 127px, black 127px, black 140px, transparent 140px);
+            -webkit-mask: radial-gradient(circle at center, transparent 127px, black 127px, black 140px, transparent 140px);
+            z-index: 2;
+        }
+        
+        .timer-circle-progress-dot {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: #FF3459;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            z-index: 10;
+            transform: translate(-50%, -50%);
+            left: 50%;
+            top: 6.5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            display: none;
+        }
+        
+        .timer-center-image {
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timer-center-image img {
+            width: 300px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .timer-points-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-align: center;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 10px 14px;
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 25;
+            box-shadow: 0 4px 12px rgba(255, 155, 173, 0.4);
+        }
+
+        .timer-circle-mask {
+            position: absolute;
+            bottom: -20px;
+            left: -20px;
+            right: -20px;
+            height: 60px;
+            background: #FFEBEE;
+            border-radius: 20px 20px 0 0;
+            z-index: 15;
+        }
+
+        .timer-points-box::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid #ffffff;
+        }
+
+        .timer-points-text {
+            font-family: 'Moneygraph', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: #FF3459;
+            margin-bottom: 2px;
+        }
+
+        .timer-total-points-text {
+            font-family: 'Moneygraph', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: #FF3459;
+            margin-top: 4px;
         }
         
         .timer-display {
@@ -2384,6 +2470,7 @@
             justify-content: center;
             align-items: center;
             width: 100%;
+            margin-top: 30px;
         }
         
         .timer-btn {
@@ -2410,24 +2497,24 @@
         }
         
         .timer-pause-btn {
-            background: #FF3459;
-            color: #ffffff;
+            background: #ffffff;
+            color: #FF3459;
+            border: 2px solid #FF3459;
         }
         
         .timer-pause-btn:active {
             transform: scale(0.98);
-            background: #e02d4f;
+            background: #fff5f7;
         }
         
-        .timer-reset-btn {
-            background: #ffffff;
-            color: #191f28;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        .timer-complete-btn {
+            background: #4A0F50;
+            color: #ffffff;
         }
         
-        .timer-reset-btn:active {
+        .timer-complete-btn:active {
             transform: scale(0.98);
-            background: #f5f5f5;
+            background: #3a0c40;
         }
         
         /* 마이페이지 화면 */
@@ -2848,8 +2935,18 @@
                     <div class="timer-display-wrapper">
                         <div class="timer-circle-outer"></div>
                         <div class="timer-circle-inner" id="timerCircleInner"></div>
+                        <div class="timer-circle-progress-dot" id="timerProgressDot"></div>
+                        <div class="timer-circle-mask"></div>
+                        <div class="timer-center-image">
+                            <img src="https://i.imgur.com/ngjVd36.png" alt="timer image">
+                        </div>
+                        <div class="timer-points-box">
+                            <div class="timer-points-text">포인트: +0p</div>
+                            <div class="timer-total-points-text">총누적: <span id="timerTotalPointsDisplay">0</span>p</div>
+                        </div>
                     </div>
                     <div class="timer-controls">
+                        <button class="timer-btn timer-complete-btn" id="timerCompleteBtn" style="display: none;">인증하기</button>
                         <button class="timer-btn timer-start-btn" id="timerStartBtn">시작하기</button>
                         <button class="timer-btn timer-pause-btn" id="timerPauseBtn" style="display: none;">중단하기</button>
                     </div>
@@ -5779,187 +5876,87 @@
                 secondPicker.appendChild(secondDiv);
             }
             
-            // 스크롤 이벤트 추가 (부드러운 스크롤)
-            hourPicker.addEventListener('scroll', () => handleScroll('hour', hourPicker), { passive: true });
-            minutePicker.addEventListener('scroll', () => handleScroll('minute', minutePicker), { passive: true });
-            secondPicker.addEventListener('scroll', () => handleScroll('second', secondPicker), { passive: true });
-            
-            // 휠 이벤트로 부드러운 스크롤
-            [hourPicker, minutePicker, secondPicker].forEach((picker, index) => {
-                const type = index === 0 ? 'hour' : (index === 1 ? 'minute' : 'second');
-                picker.addEventListener('wheel', (e) => {
+            // 상수
+            const ITEM_HEIGHT = 48;
+
+            // 간소화된 스크롤 처리
+            const pickers = [
+                { el: hourPicker, type: 'hour', max: 23 },
+                { el: minutePicker, type: 'minute', max: 59 },
+                { el: secondPicker, type: 'second', max: 59 }
+            ];
+
+            pickers.forEach(({ el, type, max }) => {
+                let scrollEndTimer = null;
+                let lastIdx = -1;
+                const items = el.children; // 캐시
+
+                // 스크롤 이벤트 - 최소한의 처리
+                el.addEventListener('scroll', () => {
+                    const idx = Math.min(max, Math.max(0, Math.round(el.scrollTop / ITEM_HEIGHT)));
+
+                    if (idx !== lastIdx) {
+                        // 이전 선택 해제
+                        if (lastIdx >= 0 && items[lastIdx]) {
+                            items[lastIdx].classList.remove('selected');
+                        }
+                        // 새 선택
+                        if (items[idx]) {
+                            items[idx].classList.add('selected');
+                        }
+                        lastIdx = idx;
+
+                        // 값 저장
+                        if (type === 'hour') selectedHours = idx;
+                        else if (type === 'minute') selectedMinutes = idx;
+                        else selectedSeconds = idx;
+                    }
+
+                    // 스크롤 끝나면 스냅
+                    clearTimeout(scrollEndTimer);
+                    scrollEndTimer = setTimeout(() => {
+                        const targetPos = Math.round(el.scrollTop / ITEM_HEIGHT) * ITEM_HEIGHT;
+                        if (Math.abs(el.scrollTop - targetPos) > 1) {
+                            el.scrollTop = targetPos;
+                        }
+                    }, 80);
+                }, { passive: true });
+
+                // 휠 이벤트
+                el.addEventListener('wheel', (e) => {
                     e.preventDefault();
-                    const delta = e.deltaY;
-                    picker.scrollBy({
-                        top: delta,
-                        behavior: 'smooth'
-                    });
+                    el.scrollTop += e.deltaY > 0 ? ITEM_HEIGHT : -ITEM_HEIGHT;
                 }, { passive: false });
             });
-            
-            // 초기 선택값을 중앙에 정렬 (초기값: 0시간, 0분, 0초)
+
+            // 초기 선택값 (0시간, 0분, 0초)
             selectedHours = 0;
             selectedMinutes = 0;
             selectedSeconds = 0;
-            
-            setTimeout(() => {
-                updateTimePickerSelection('hour', false);
-                updateTimePickerSelection('minute', false);
-                updateTimePickerSelection('second', false);
-            }, 300);
-        }
-        
-        // 시간 값 선택 (사용 안 함 - 스크롤만으로 선택)
-        // function selectTimeValue(type, value) {
-        //     if (type === 'hour') {
-        //         selectedHours = value;
-        //     } else if (type === 'minute') {
-        //         selectedMinutes = value;
-        //     } else if (type === 'second') {
-        //         selectedSeconds = value;
-        //     }
-        //     
-        //     updateTimePickerSelection(type);
-        // }
-        
-        // 스크롤 관련 변수
-        const scrollTimeouts = {};
-        const scrollRAF = {};
-        let isScrolling = {};
-        let isAdjusting = {}; // 스크롤 조정 중 플래그
-        let lastScrollTop = {}; // 마지막 스크롤 위치
-        
-        // 스크롤로 선택된 값 업데이트 (즉시 실시간 업데이트 - 지연 없음)
-        function handleScroll(type, picker) {
-            // 스크롤 조정 중이면 무시
-            if (isAdjusting[type]) {
-                return;
-            }
-            
-            isScrolling[type] = true;
-            
-            // 즉시 실행 (requestAnimationFrame 없이 바로 실행)
-            const values = picker.querySelectorAll('.time-picker-value');
-            if (values.length === 0) return;
-            
-            const pickerHeight = picker.offsetHeight;
-            const scrollTop = picker.scrollTop;
-            const itemHeight = 48;
-            const centerOffset = 76;
-            const centerY = scrollTop + centerOffset + (itemHeight / 2);
-            
-            // 중앙에 가장 가까운 항목 찾기
-            let closestIndex = 0;
-            let closestDistance = Infinity;
-            
-            values.forEach((val, index) => {
-                const valTop = index * itemHeight;
-                const valCenter = valTop + (itemHeight / 2);
-                const distance = Math.abs(centerY - valCenter);
-                
-                if (distance < closestDistance) {
-                    closestDistance = distance;
-                    closestIndex = index;
-                }
+
+            // 즉시 초기화
+            requestAnimationFrame(() => {
+                updateTimePickerSelection('hour');
+                updateTimePickerSelection('minute');
+                updateTimePickerSelection('second');
             });
-            
-            if (values[closestIndex]) {
-                const value = parseInt(values[closestIndex].dataset.value);
-                if (!isNaN(value)) {
-                    const currentValue = type === 'hour' ? selectedHours : (type === 'minute' ? selectedMinutes : selectedSeconds);
-                    
-                    // 값이 변경된 경우 즉시 업데이트 (지연 없이)
-                    if (value !== currentValue) {
-                        if (type === 'hour') {
-                            selectedHours = value;
-                        } else if (type === 'minute') {
-                            selectedMinutes = value;
-                        } else if (type === 'second') {
-                            selectedSeconds = value;
-                        }
-                        // 선택 상태만 즉시 업데이트 (스크롤 조정 없이)
-                        updateTimePickerSelectionOnly(type);
-                    }
-                }
-            }
-            
-            // 스크롤이 끝난 후에만 중앙 정렬 (짧은 대기 시간)
-            clearTimeout(scrollTimeouts[type]);
-            scrollTimeouts[type] = setTimeout(() => {
-                isScrolling[type] = false;
-                // 스크롤이 완전히 멈춘 후에만 조정
-                if (!isScrolling[type] && !isAdjusting[type]) {
-                    updateTimePickerSelection(type, true);
-                }
-            }, 150);
         }
         
-        // 선택 상태만 업데이트 (스크롤 없이 - 즉시 실행)
-        function updateTimePickerSelectionOnly(type) {
+        // 초기화용 스크롤 함수 (단순화)
+        function updateTimePickerSelection(type) {
             const pickerId = type === 'hour' ? 'hourPicker' : (type === 'minute' ? 'minutePicker' : 'secondPicker');
             const picker = document.getElementById(pickerId);
             if (!picker) return;
-            
-            const values = picker.querySelectorAll('.time-picker-value');
+
             const selectedValue = type === 'hour' ? selectedHours : (type === 'minute' ? selectedMinutes : selectedSeconds);
-            
-            // 즉시 업데이트 (지연 없이)
-            for (let i = 0; i < values.length; i++) {
-                const val = values[i];
-                const valValue = parseInt(val.dataset.value);
-                if (valValue === selectedValue) {
-                    val.classList.add('selected');
-                } else {
-                    val.classList.remove('selected');
-                }
+
+            // 선택 표시
+            if (picker.children[selectedValue]) {
+                picker.children[selectedValue].classList.add('selected');
             }
-        }
-        
-        // 시간 선택기 선택 상태 업데이트 (시간, 분, 초 모두 정확한 중앙 정렬)
-        function updateTimePickerSelection(type, smoothScroll = true) {
-            const pickerId = type === 'hour' ? 'hourPicker' : (type === 'minute' ? 'minutePicker' : 'secondPicker');
-            const picker = document.getElementById(pickerId);
-            if (!picker) return;
-            
-            // 스크롤 조정 중 플래그 설정
-            isAdjusting[type] = true;
-            
-            const values = picker.querySelectorAll('.time-picker-value');
-            const selectedValue = type === 'hour' ? selectedHours : (type === 'minute' ? selectedMinutes : selectedSeconds);
-            const pickerHeight = picker.offsetHeight;
-            const itemHeight = 48; // 고정 높이
-            const centerOffset = 76; // 상단 패딩
-            
-            values.forEach((val, index) => {
-                val.classList.remove('selected');
-                if (parseInt(val.dataset.value) === selectedValue) {
-                    val.classList.add('selected');
-                    // 선택된 항목을 정확히 중앙으로 스크롤
-                    const centerPosition = (pickerHeight / 2) - (itemHeight / 2);
-                    const scrollPosition = (index * itemHeight) - centerPosition + centerOffset;
-                    
-                    // 스크롤 위치 업데이트
-                    lastScrollTop[type] = scrollPosition;
-                    
-                    // 스크롤 조정
-                    if (smoothScroll) {
-                        picker.scrollTo({ 
-                            top: Math.max(0, scrollPosition), 
-                            behavior: 'smooth' 
-                        });
-                        // 스크롤 조정 완료 후 플래그 해제
-                        setTimeout(() => {
-                            isAdjusting[type] = false;
-                        }, 500);
-                    } else {
-                        picker.scrollTop = Math.max(0, scrollPosition);
-                        // 즉시 스크롤이므로 짧은 시간 후 플래그 해제
-                        setTimeout(() => {
-                            isAdjusting[type] = false;
-                        }, 100);
-                    }
-                }
-            });
+
+            // 스크롤 위치
+            picker.scrollTop = selectedValue * 48;
         }
         
         // 시간 설정 화면 초기화
@@ -6021,11 +6018,24 @@
                     timerTotalTime.textContent = `총 시간 ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
                 }
                 
-                // 시작 버튼 표시, 일시정지 버튼 숨김
+                // 포인트 표시 업데이트
+                updateTimerPointsDisplay();
+                
+                // 시작 버튼 표시, 일시정지/인증 버튼 숨김
                 const timerStartBtn = document.getElementById('timerStartBtn');
                 const timerPauseBtn = document.getElementById('timerPauseBtn');
+                const timerCompleteBtn = document.getElementById('timerCompleteBtn');
                 if (timerStartBtn) timerStartBtn.style.display = 'block';
                 if (timerPauseBtn) timerPauseBtn.style.display = 'none';
+                if (timerCompleteBtn) timerCompleteBtn.style.display = 'none';
+            }
+        }
+        
+        // 타이머 포인트 표시 업데이트 함수
+        function updateTimerPointsDisplay() {
+            const timerTotalPointsDisplay = document.getElementById('timerTotalPointsDisplay');
+            if (timerTotalPointsDisplay) {
+                timerTotalPointsDisplay.textContent = totalPoints.toString();
             }
         }
         
@@ -6123,7 +6133,9 @@
                     // 시작 버튼 숨기고 일시정지 버튼 표시
                     timerStartBtn.style.display = 'none';
                     const timerPauseBtn = document.getElementById('timerPauseBtn');
+                    const timerCompleteBtn = document.getElementById('timerCompleteBtn');
                     if (timerPauseBtn) timerPauseBtn.style.display = 'block';
+                    if (timerCompleteBtn) timerCompleteBtn.style.display = 'none';
                 }
             });
         }
@@ -6160,11 +6172,16 @@
             timerSeconds = 0;
             updateTimerDisplay();
             
-            // 시작 버튼 표시, 일시정지 버튼 숨김
+            // 인증하기 버튼 표시, 시작/일시정지 버튼 숨김
             const timerStartBtn = document.getElementById('timerStartBtn');
             const timerPauseBtn = document.getElementById('timerPauseBtn');
-            if (timerStartBtn) timerStartBtn.style.display = 'block';
+            const timerCompleteBtn = document.getElementById('timerCompleteBtn');
+            if (timerStartBtn) timerStartBtn.style.display = 'none';
             if (timerPauseBtn) timerPauseBtn.style.display = 'none';
+            if (timerCompleteBtn) timerCompleteBtn.style.display = 'block';
+            
+            // 포인트 표시 업데이트
+            updateTimerPointsDisplay();
         }
         
         // 완료도 업데이트 함수
@@ -6234,6 +6251,38 @@
             });
         }
         
+        // 타이머 인증하기 버튼
+        const timerCompleteBtn = document.getElementById('timerCompleteBtn');
+        if (timerCompleteBtn) {
+            timerCompleteBtn.addEventListener('click', function() {
+                // 포인트 획득 및 완료 처리
+                if (targetTimeSeconds > 0) {
+                    const targetMinutes = targetTimeSeconds / 60;
+                    const earnedPoints = Math.floor(targetMinutes);
+                    totalPoints += earnedPoints;
+                    savePoints();
+                    updatePointsDisplay();
+                    updateTimerPointsDisplay();
+                    
+                    alert(`인증 완료!\n획득 포인트: ${earnedPoints}점\n누적 포인트: ${totalPoints}점`);
+                }
+                
+                // 타이머 화면 닫기
+                const timerScreen = document.getElementById('timerScreen');
+                if (timerScreen) {
+                    timerScreen.style.display = 'none';
+                }
+                
+                // 타이머 초기화
+                timerSeconds = 0;
+                timerRunning = false;
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+            });
+        }
+        
         // 타이머 리셋 버튼
         const timerResetBtn = document.getElementById('timerResetBtn');
         if (timerResetBtn) {
@@ -6274,14 +6323,43 @@
                 timerTotalTime.textContent = `총 시간 ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
             }
             
-            // 뽀모도로 타이머 진행도 업데이트
+            // 포인트 표시 업데이트
+            updateTimerPointsDisplay();
+            
+            // 뽀모도로 타이머 진행도 업데이트 (남은 시간 표시)
             const timerCircleInner = document.getElementById('timerCircleInner');
+            const timerProgressDot = document.getElementById('timerProgressDot');
+            
             if (timerCircleInner && targetTimeSeconds > 0) {
-                const progress = 1 - (timerSeconds / targetTimeSeconds);
-                const percentage = progress * 100;
-                timerCircleInner.style.background = `conic-gradient(from -90deg, #FF3459 0%, #FF3459 ${percentage}%, transparent ${percentage}%)`;
-            } else if (timerCircleInner) {
-                timerCircleInner.style.background = 'conic-gradient(from -90deg, #FF3459 0%, #FF3459 0%, transparent 0%)';
+                const remainingProgress = timerSeconds / targetTimeSeconds; // 남은 시간 비율
+                const remainingPercentage = remainingProgress * 100;
+                const usedPercentage = 100 - remainingPercentage; // 소요된 시간 비율
+                const angle = (remainingProgress * 360) - 90; // -90도에서 시작 (7시 방향, 하단)
+                
+                // 남은 시간은 핑크색, 소요된 시간은 연핑크색으로 표시
+                timerCircleInner.style.background = `conic-gradient(from -90deg, #FF3459 0%, #FF3459 ${remainingPercentage}%, rgba(255, 235, 238, 0.5) ${remainingPercentage}%, rgba(255, 235, 238, 0.5) 100%)`;
+                
+                // 진행 끝 점 위치 업데이트 (핑크색 원의 끝 부분)
+                if (timerProgressDot) {
+                    const radius = 133.5; // 테두리 중간 (280/2 - 13/2)
+                    const centerX = 140; // wrapper 중심 (280 / 2)
+                    const centerY = 140; // wrapper 중심 (280 / 2)
+                    const radian = (angle * Math.PI) / 180;
+                    const x = centerX + radius * Math.cos(radian);
+                    const y = centerY + radius * Math.sin(radian);
+
+                    timerProgressDot.style.left = x + 'px';
+                    timerProgressDot.style.top = y + 'px';
+                    // 타이머 실행 중이고 남은 시간이 있을 때만 표시
+                    timerProgressDot.style.display = (timerRunning && remainingProgress > 0.01 && remainingProgress < 0.99) ? 'block' : 'none';
+                }
+            } else {
+                if (timerCircleInner) {
+                    timerCircleInner.style.background = 'conic-gradient(from -90deg, #FF3459 0%, #FF3459 100%, rgba(255, 235, 238, 0.5) 100%)';
+                }
+                if (timerProgressDot) {
+                    timerProgressDot.style.display = 'none';
+                }
             }
         }
         
@@ -6314,10 +6392,12 @@
             document.addEventListener('DOMContentLoaded', function() {
                 loadPoints();
                 updatePointsDisplay();
+                updateTimerPointsDisplay();
             });
         } else {
             loadPoints();
             updatePointsDisplay();
+            updateTimerPointsDisplay();
         }
     </script>
 </body>
