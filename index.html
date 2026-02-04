@@ -1584,18 +1584,17 @@
             cursor: pointer;
             margin-top: 12px;
             transition: all 0.2s ease;
-            box-shadow: 0 2px 8px rgba(74, 15, 80, 0.2);
             flex-shrink: 0;
         }
         
         .start-button:hover {
             background: #5a1f60;
-            box-shadow: 0 4px 12px rgba(74, 15, 80, 0.3);
         }
         
         .start-button:active {
             transform: scale(0.98);
             background: #3a0c40;
+            transition: all 0.2s;
         }
 
         /* 탭 버튼 활성 상태 */
@@ -2074,6 +2073,42 @@
             box-sizing: border-box;
         }
 
+        .time-setup-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+            margin-bottom: 20px;
+            padding-top: calc(20px + env(safe-area-inset-top));
+        }
+        
+        .time-setup-back-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 20px;
+            font-weight: 600;
+            color: #191f28;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .time-setup-back-btn:hover {
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+        
+        .time-setup-back-btn:active {
+            transform: scale(0.95);
+            background: rgba(245, 245, 245, 1);
+        }
+        
         .time-setup-title {
             font-family: 'Moneygraph', sans-serif;
             font-size: 28px;
@@ -2197,7 +2232,7 @@
             width: 100%;
             max-width: 240px;
             height: 56px;
-            background: #5B226B;
+            background: #4A0F50;
             color: #ffffff;
             border: none;
             border-radius: 28px;
@@ -2206,13 +2241,13 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 4px 12px rgba(91, 34, 107, 0.3);
             margin-top: 40px;
         }
 
         .time-setup-start-btn:active {
             transform: scale(0.98);
-            background: #4a1d58;
+            background: #3a0c40;
+            transition: all 0.2s;
         }
 
         /* 타이머 설정 화면 */
@@ -2237,15 +2272,18 @@
             display: flex;
             flex-direction: column;
             padding: 20px;
+            padding-top: calc(20px + env(safe-area-inset-top));
             box-sizing: border-box;
         }
         
         .timer-screen-header {
             display: flex;
             align-items: center;
+            justify-content: flex-start;
             gap: 16px;
-            margin-bottom: 20px;
+            margin-bottom: 0;
             padding-top: calc(20px + env(safe-area-inset-top));
+            padding-bottom: 0;
         }
         
         .timer-back-btn {
@@ -2282,6 +2320,8 @@
             align-items: center;
             justify-content: flex-start;
             gap: 12px;
+            margin-top: 0;
+            padding-top: 0;
         }
         
         .timer-task-name {
@@ -2302,6 +2342,8 @@
             font-weight: 600;
             color: #5B226B;
             text-align: center;
+            margin-top: -10px;
+            margin-bottom: 4px;
         }
 
         .timer-total-time {
@@ -2311,6 +2353,7 @@
             color: #D9D9D9;
             text-align: center;
             word-spacing: 6px;
+            margin-top: 0px;
         }
         
         .timer-display-wrapper {
@@ -2390,9 +2433,10 @@
             box-shadow: 0 4px 12px rgba(255, 155, 173, 0.4);
             font-family: 'Moneygraph', sans-serif;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 500;
             color: #4A0F50;
             white-space: nowrap;
+            text-shadow: 0.1px 0 0 currentColor;
         }
 
         .timer-top-bubble::after {
@@ -2496,8 +2540,8 @@
         .timer-btn {
             width: 100%;
             max-width: 240px;
-            height: 56px;
-            border-radius: 28px;
+            height: 52px;
+            border-radius: 26px;
             border: none;
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: 16px;
@@ -2514,6 +2558,7 @@
         .timer-start-btn:active {
             transform: scale(0.98);
             background: #3a0c40;
+            transition: all 0.2s;
         }
         
         .timer-pause-btn {
@@ -2525,6 +2570,143 @@
         .timer-pause-btn:active {
             transform: scale(0.98);
             background: #fff5f7;
+            transition: all 0.2s;
+        }
+        
+        /* 중단하기 경고창 모달 */
+        .timer-pause-warning-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .timer-pause-warning-overlay.active {
+            display: flex;
+        }
+        
+        .timer-pause-warning-modal {
+            width: 90%;
+            max-width: 320px;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .timer-pause-warning-title {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #191f28;
+            margin-bottom: 16px;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+            transition: opacity 0.2s;
+        }
+        
+        .timer-pause-warning-title:hover {
+            opacity: 0.7;
+        }
+        
+        .timer-pause-warning-title:active {
+            opacity: 0.5;
+        }
+        
+        .timer-pause-warning-message {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 15px;
+            font-weight: 400;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .timer-pause-warning-checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        
+        .timer-pause-warning-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #D9D9D9;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .timer-pause-warning-checkbox.checked {
+            background: #FF3459;
+            border-color: #FF3459;
+        }
+        
+        .timer-pause-warning-checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        
+        .timer-pause-warning-checkbox-label {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            color: #666;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .timer-pause-warning-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .timer-pause-warning-btn {
+            flex: 1;
+            height: 48px;
+            border-radius: 12px;
+            border: none;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .timer-pause-warning-btn-cancel {
+            background: #f5f5f5;
+            color: #666;
+        }
+        
+        .timer-pause-warning-btn-cancel:active {
+            background: #e0e0e0;
+        }
+        
+        .timer-pause-warning-btn-confirm {
+            background: #FF3459;
+            color: #ffffff;
+        }
+        
+        .timer-pause-warning-btn-confirm:active {
+            background: #E02E4D;
+            transform: scale(0.98);
         }
         
         .timer-complete-btn {
@@ -2535,6 +2717,7 @@
         .timer-complete-btn:active {
             transform: scale(0.98);
             background: #3a0c40;
+            transition: all 0.2s;
         }
         
         /* 마이페이지 화면 */
@@ -2902,6 +3085,9 @@
         <!-- 시간 설정 화면 -->
         <div class="time-setup-screen" id="timeSetupScreen">
             <div class="time-setup-content">
+                <div class="time-setup-header">
+                    <button class="time-setup-back-btn" id="timeSetupBackBtn">‹</button>
+                </div>
                 <div class="time-setup-title">목표시간설정</div>
                 
                 <div class="time-picker-container">
@@ -2938,7 +3124,6 @@
             <div class="timer-screen-content">
                 <div class="timer-screen-header">
                     <button class="timer-back-btn" id="timerBackBtn">‹</button>
-                    <h2 class="timer-screen-title" id="timerScreenTitle">타이머</h2>
                 </div>
                 <div class="timer-screen-body">
                     <div class="timer-task-name" id="timerTaskName" style="display: none;">할 일 이름</div>
@@ -2970,8 +3155,24 @@
                     <div class="timer-controls">
                         <button class="timer-btn timer-complete-btn" id="timerCompleteBtn" style="display: none;">인증하기</button>
                         <button class="timer-btn timer-start-btn" id="timerStartBtn">인증하기</button>
-                        <button class="timer-btn timer-pause-btn" id="timerPauseBtn">중단하기</button>
+                        <button class="timer-btn timer-pause-btn" id="timerPauseBtn">일시정지</button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 중단하기 경고창 모달 -->
+        <div class="timer-pause-warning-overlay" id="timerPauseWarningOverlay">
+            <div class="timer-pause-warning-modal">
+                <div class="timer-pause-warning-title">잠깐</div>
+                <div class="timer-pause-warning-message">이전 버튼으로 돌아가면 인증 시간 기록이 리셋되는데 그래도 진행할래?</div>
+                <div class="timer-pause-warning-checkbox-container" id="timerPauseWarningCheckboxContainer">
+                    <div class="timer-pause-warning-checkbox" id="timerPauseWarningCheckbox"></div>
+                    <label class="timer-pause-warning-checkbox-label" for="timerPauseWarningCheckbox">이 안내 다시 안 볼게</label>
+                </div>
+                <div class="timer-pause-warning-buttons">
+                    <button class="timer-pause-warning-btn timer-pause-warning-btn-cancel" id="timerPauseWarningCancelBtn">취소</button>
+                    <button class="timer-pause-warning-btn timer-pause-warning-btn-confirm" id="timerPauseWarningConfirmBtn">확인</button>
                 </div>
             </div>
         </div>
@@ -2989,6 +3190,7 @@
                         <span class="my-page-points-label">누적 포인트:</span>
                         <span class="my-page-points-value" id="totalPointsDisplay">0</span>
                     </div>
+                    <button class="my-page-reset-btn" id="myPageResetWarningBtn" style="margin-top: 20px; padding: 12px 24px; background: #f5f5f5; border: none; border-radius: 12px; font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 14px; font-weight: 500; color: #666; cursor: pointer;">경고창 설정 초기화</button>
                 </div>
             </div>
         </div>
@@ -6114,19 +6316,13 @@
             initTimeSetupScreen();
         }
         
-        // 타이머 뒤로가기 버튼
-        const timerBackBtn = document.getElementById('timerBackBtn');
-        if (timerBackBtn) {
-            timerBackBtn.addEventListener('click', function() {
-                const timerScreen = document.getElementById('timerScreen');
-                if (timerScreen) {
-                    // 타이머 정지
-                    if (timerInterval) {
-                        clearInterval(timerInterval);
-                        timerInterval = null;
-                        timerRunning = false;
-                    }
-                    timerScreen.style.display = 'none';
+        // 시간 설정 화면 뒤로가기 버튼
+        const timeSetupBackBtn = document.getElementById('timeSetupBackBtn');
+        if (timeSetupBackBtn) {
+            timeSetupBackBtn.addEventListener('click', function() {
+                const timeSetupScreen = document.getElementById('timeSetupScreen');
+                if (timeSetupScreen) {
+                    timeSetupScreen.classList.remove('active');
                 }
             });
         }
@@ -6252,18 +6448,179 @@
             }
         }
         
-        // 타이머 일시정지 버튼
+        // 중단하기 경고창 관련 변수
+        let dontShowPauseWarning = false;
+        
+        // 로컬 스토리지에서 경고창 표시 여부 불러오기
+        function loadPauseWarningSetting() {
+            const saved = localStorage.getItem('dontShowPauseWarning');
+            if (saved === 'true') {
+                dontShowPauseWarning = true;
+            }
+        }
+        
+        // 로컬 스토리지에 경고창 표시 여부 저장하기
+        function savePauseWarningSetting() {
+            localStorage.setItem('dontShowPauseWarning', dontShowPauseWarning.toString());
+        }
+        
+        // 페이지 로드 시 설정 불러오기
+        loadPauseWarningSetting();
+        
+        // 중단하기 버튼 클릭 시 목표시간 설정 화면으로 돌아가는 함수
+        function goBackToTimeSetupScreen() {
+            const timerScreen = document.getElementById('timerScreen');
+            const timeSetupScreen = document.getElementById('timeSetupScreen');
+            
+            if (timerScreen) {
+                // 타이머 정지
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    timerRunning = false;
+                }
+                // 타이머 초기화
+                timerSeconds = 0;
+                updateTimerDisplay();
+                timerScreen.style.display = 'none';
+            }
+            
+            // 목표시간 설정 화면 표시
+            if (timeSetupScreen) {
+                // 기본값 설정
+                selectedHours = 0;
+                selectedMinutes = 25;
+                selectedSeconds = 0;
+                
+                // 화면이 표시된 후 스크롤 위치 업데이트
+                timeSetupScreen.classList.add('active');
+                setTimeout(() => {
+                    updateTimePickerSelection('hour', true);
+                    updateTimePickerSelection('minute', true);
+                    updateTimePickerSelection('second', true);
+                }, 150);
+            }
+        }
+        
+        // 경고창을 표시할 때 체크박스 초기화하는 함수
+        function showPauseWarning() {
+            const warningOverlay = document.getElementById('timerPauseWarningOverlay');
+            const timerPauseWarningCheckbox = document.getElementById('timerPauseWarningCheckbox');
+            
+            // 체크박스를 항상 체크 해제 상태로 초기화
+            if (timerPauseWarningCheckbox) {
+                timerPauseWarningCheckbox.classList.remove('checked');
+            }
+            
+            // 경고창 표시
+            if (warningOverlay) {
+                warningOverlay.classList.add('active');
+            }
+        }
+        
+        // 타이머 뒤로가기 버튼
+        const timerBackBtn = document.getElementById('timerBackBtn');
+        if (timerBackBtn) {
+            timerBackBtn.addEventListener('click', function() {
+                // 체크박스 설정 확인
+                if (dontShowPauseWarning) {
+                    // 경고창 표시하지 않고 바로 목표시간 설정 화면으로
+                    goBackToTimeSetupScreen();
+                } else {
+                    // 경고창 표시 (체크박스 자동 초기화)
+                    showPauseWarning();
+                }
+            });
+        }
+        
+        // 타이머 일시정지 버튼 (중단하기)
         const timerPauseBtn = document.getElementById('timerPauseBtn');
         if (timerPauseBtn) {
             timerPauseBtn.addEventListener('click', function() {
                 if (timerRunning) {
+                    // 타이머 일시정지
                     timerRunning = false;
                     if (timerInterval) {
                         clearInterval(timerInterval);
                         timerInterval = null;
                     }
-                    
-                    // 버튼 상태 유지 (둘 다 표시)
+                    stopBubbleRotation(); // 말풍선 텍스트 변경 중지
+                } else {
+                    // 타이머 재개
+                    timerRunning = true;
+                    startBubbleRotation(); // 말풍선 텍스트 변경 시작
+                    timerInterval = setInterval(function() {
+                        if (timerSeconds > 0) {
+                            timerSeconds--;
+                            updateTimerDisplay();
+                            
+                            // 타이머가 0이 되면 완료 처리
+                            if (timerSeconds <= 0) {
+                                completeTimer();
+                            }
+                        }
+                    }, 1000);
+                }
+            });
+        }
+        
+        // 경고창 체크박스 클릭 이벤트
+        const timerPauseWarningCheckbox = document.getElementById('timerPauseWarningCheckbox');
+        const timerPauseWarningCheckboxContainer = document.getElementById('timerPauseWarningCheckboxContainer');
+        if (timerPauseWarningCheckboxContainer) {
+            timerPauseWarningCheckboxContainer.addEventListener('click', function() {
+                if (timerPauseWarningCheckbox) {
+                    timerPauseWarningCheckbox.classList.toggle('checked');
+                    dontShowPauseWarning = timerPauseWarningCheckbox.classList.contains('checked');
+                    savePauseWarningSetting();
+                }
+            });
+        }
+        
+        // 경고창 취소 버튼
+        const timerPauseWarningCancelBtn = document.getElementById('timerPauseWarningCancelBtn');
+        if (timerPauseWarningCancelBtn) {
+            timerPauseWarningCancelBtn.addEventListener('click', function() {
+                const warningOverlay = document.getElementById('timerPauseWarningOverlay');
+                if (warningOverlay) {
+                    warningOverlay.classList.remove('active');
+                }
+            });
+        }
+        
+        // 경고창 확인 버튼
+        const timerPauseWarningConfirmBtn = document.getElementById('timerPauseWarningConfirmBtn');
+        if (timerPauseWarningConfirmBtn) {
+            timerPauseWarningConfirmBtn.addEventListener('click', function() {
+                const warningOverlay = document.getElementById('timerPauseWarningOverlay');
+                if (warningOverlay) {
+                    warningOverlay.classList.remove('active');
+                }
+                // 목표시간 설정 화면으로 돌아가기
+                goBackToTimeSetupScreen();
+            });
+        }
+        
+        // 경고창 제목 "잠깐" 클릭 시 체크박스 상태 초기화 (테스트용)
+        const timerPauseWarningTitle = document.querySelector('.timer-pause-warning-title');
+        if (timerPauseWarningTitle) {
+            timerPauseWarningTitle.addEventListener('click', function() {
+                // 체크박스 상태 초기화
+                if (timerPauseWarningCheckbox) {
+                    timerPauseWarningCheckbox.classList.remove('checked');
+                    dontShowPauseWarning = false;
+                    savePauseWarningSetting();
+                    alert('체크박스 상태가 초기화되었습니다. 이제 경고창이 다시 표시됩니다.');
+                }
+            });
+        }
+        
+        // 경고창 오버레이 클릭 시 닫기
+        const timerPauseWarningOverlay = document.getElementById('timerPauseWarningOverlay');
+        if (timerPauseWarningOverlay) {
+            timerPauseWarningOverlay.addEventListener('click', function(e) {
+                if (e.target === timerPauseWarningOverlay) {
+                    timerPauseWarningOverlay.classList.remove('active');
                 }
             });
         }
@@ -6444,6 +6801,24 @@
                 if (myPageScreen) {
                     myPageScreen.style.display = 'none';
                 }
+            });
+        }
+        
+        // 마이페이지 경고창 설정 초기화 버튼
+        const myPageResetWarningBtn = document.getElementById('myPageResetWarningBtn');
+        if (myPageResetWarningBtn) {
+            myPageResetWarningBtn.addEventListener('click', function() {
+                // 로컬 스토리지에서 설정 삭제
+                localStorage.removeItem('dontShowPauseWarning');
+                dontShowPauseWarning = false;
+                
+                // 체크박스 상태도 초기화
+                const timerPauseWarningCheckbox = document.getElementById('timerPauseWarningCheckbox');
+                if (timerPauseWarningCheckbox) {
+                    timerPauseWarningCheckbox.classList.remove('checked');
+                }
+                
+                alert('경고창 설정이 초기화되었습니다. 이제 중단하기 버튼을 누르면 경고창이 다시 표시됩니다.');
             });
         }
         
