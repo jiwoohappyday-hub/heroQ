@@ -2987,36 +2987,13 @@
             width: 100%;
             max-width: var(--artboard-width);
             height: 100%;
-            background: #ffffff;
+            background: linear-gradient(to top, #FAFB62, #FDFDB8 40%, #ffffff 75%);
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 20px;
             padding-top: calc(20px + env(safe-area-inset-top));
             box-sizing: border-box;
-        }
-
-        .card-draw-header {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .card-draw-back-btn {
-            background: none;
-            border: none;
-            font-size: 28px;
-            color: #333;
-            cursor: pointer;
-            padding: 8px;
-        }
-
-        .card-draw-title {
-            font-family: 'Moneygraph', sans-serif;
-            font-size: 20px;
-            font-weight: 700;
-            color: #FF3459;
         }
 
         .card-draw-body {
@@ -3029,26 +3006,16 @@
             gap: 24px;
         }
 
-        .card-draw-message {
-            font-family: 'Moneygraph', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: #FF3459;
-            text-align: center;
-        }
-
-        .card-draw-grid {
+        .card-draw-single {
             display: flex;
-            gap: 10px;
             justify-content: center;
-            flex-wrap: wrap;
-            padding: 0 10px;
+            align-items: center;
         }
 
         .draw-card {
-            width: 90px;
-            height: 130px;
-            perspective: 600px;
+            width: 280px;
+            height: 510px;
+            perspective: 800px;
             cursor: pointer;
         }
 
@@ -3056,29 +3023,28 @@
             width: 100%;
             height: 100%;
             position: relative;
+            -webkit-transform-style: preserve-3d;
             transform-style: preserve-3d;
-            transition: transform 0.6s ease;
+            transition: transform 0.8s ease;
         }
 
         .draw-card.flipped .draw-card-inner {
             transform: rotateY(180deg);
         }
 
-        .draw-card.not-selected {
-            opacity: 0.4;
-            pointer-events: none;
-            transform: scale(0.92);
-            transition: all 0.4s ease;
+        .draw-card.flipped {
+            animation: cardBounce 0.6s ease 0.4s;
         }
 
-        .draw-card.flipped {
-            animation: cardBounce 0.6s ease 0.3s;
+        .draw-card.flipped .card-shimmer,
+        .draw-card.flipped .card-sparkles {
+            display: none;
         }
 
         @keyframes cardBounce {
             0% { transform: scale(1); }
-            40% { transform: scale(1.12); }
-            70% { transform: scale(0.96); }
+            40% { transform: scale(1.08); }
+            70% { transform: scale(0.97); }
             100% { transform: scale(1); }
         }
 
@@ -3086,76 +3052,126 @@
             position: absolute;
             width: 100%;
             height: 100%;
+            -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
-            border-radius: 14px;
+            border-radius: 16px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
         }
 
         .draw-card-front {
-            background: linear-gradient(135deg, #4A0F50, #7B2D8E);
-            color: #ffffff;
-            font-family: 'Moneygraph', sans-serif;
-            font-size: 32px;
-            font-weight: 700;
-            box-shadow: 0 4px 16px rgba(74, 15, 80, 0.35);
-            border: 2px solid rgba(255, 255, 255, 0.15);
+            background: linear-gradient(145deg, #FF85A2, #FF3459, #E0254A);
+            box-shadow: 0 8px 30px rgba(255, 52, 89, 0.4);
+            border: 2.5px solid rgba(255, 255, 255, 0.3);
         }
 
-        .draw-card-front::before {
-            content: '';
+        .card-front-border {
             position: absolute;
-            top: 8px;
-            left: 8px;
-            right: 8px;
-            bottom: 8px;
-            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.35);
             border-radius: 10px;
             pointer-events: none;
         }
 
-        .draw-card-back {
-            background: #ffffff;
-            transform: rotateY(180deg);
-            border: 2px solid #FFC0CC;
-            box-shadow: 0 4px 16px rgba(255, 52, 89, 0.2);
-            gap: 6px;
-            padding: 10px;
+        .card-front-icon {
+            font-size: 32px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
         }
 
-        .draw-card-emoji {
-            font-size: 36px;
-            line-height: 1;
-        }
-
-        .draw-card-reward {
+        .card-front-label {
             font-family: 'Moneygraph', sans-serif;
-            font-size: 11px;
-            font-weight: 600;
-            color: #FF3459;
-            text-align: center;
-            word-break: keep-all;
-            line-height: 1.3;
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 3px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
 
-        .card-draw-result {
-            text-align: center;
-            animation: fadeInUp 0.5s ease;
+        .card-front-icon-bottom {
+            font-size: 32px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 8px;
+        }
+
+        /* 반짝이는 빛 효과 (shimmer) */
+        .card-shimmer {
+            position: absolute;
+            top: 0; left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(
+                105deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.5) 45%,
+                rgba(255, 255, 255, 0.8) 50%,
+                rgba(255, 255, 255, 0.5) 55%,
+                transparent 70%
+            );
+            animation: shimmerMove 2.5s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 2;
+            border-radius: 16px;
+        }
+
+        @keyframes shimmerMove {
+            0% { left: -100%; }
+            50% { left: 150%; }
+            100% { left: 150%; }
+        }
+
+        /* 반짝이는 별 효과 (sparkles) */
+        .card-sparkles {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 6px 2px rgba(255, 192, 203, 0.8), 0 0 12px 4px rgba(255, 105, 140, 0.4);
+            animation: sparkleAnim 1.8s ease-in-out infinite;
+        }
+
+        .sparkle.s1 { top: 12%; left: 18%; animation-delay: 0s; }
+        .sparkle.s2 { top: 8%; right: 22%; animation-delay: 0.4s; }
+        .sparkle.s3 { top: 45%; left: 8%; animation-delay: 0.8s; }
+        .sparkle.s4 { top: 70%; right: 12%; animation-delay: 0.3s; }
+        .sparkle.s5 { bottom: 15%; left: 25%; animation-delay: 1.1s; }
+        .sparkle.s6 { top: 30%; right: 8%; animation-delay: 0.6s; }
+
+        @keyframes sparkleAnim {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .draw-card-back {
+            transform: rotateY(180deg);
+            background: transparent;
+            border: none;
+            box-shadow: 0 8px 30px rgba(255, 52, 89, 0.25);
+        }
+
+        .draw-card-back-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 16px;
         }
 
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-
-        .card-draw-result-text {
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            color: #4A0F50;
-            line-height: 1.6;
         }
 
         .card-draw-confirm-btn {
@@ -3822,61 +3838,30 @@
     <!-- 카드뽑기 화면 -->
     <div class="card-draw-screen" id="cardDrawScreen">
         <div class="card-draw-content">
-            <div class="card-draw-header">
-                <button class="card-draw-back-btn" id="cardDrawBackBtn">‹</button>
-                <div class="card-draw-title">카드뽑기</div>
-            </div>
             <div class="card-draw-body">
-                <div class="card-draw-message">카드를 한 장 선택하세요!</div>
-                <div class="card-draw-grid" id="cardDrawGrid">
-                    <div class="draw-card" data-index="0">
+                <div class="card-draw-single" id="cardDrawSingle">
+                    <div class="draw-card" id="drawCard">
                         <div class="draw-card-inner">
-                            <div class="draw-card-front">?</div>
+                            <div class="draw-card-front">
+                                <div class="card-front-border"></div>
+                                <div class="card-front-icon">&#10022;</div>
+                                <div class="card-front-label">HERO Q</div>
+                                <div class="card-front-icon-bottom">&#10022;</div>
+                                <div class="card-shimmer"></div>
+                                <div class="card-sparkles">
+                                    <div class="sparkle s1"></div>
+                                    <div class="sparkle s2"></div>
+                                    <div class="sparkle s3"></div>
+                                    <div class="sparkle s4"></div>
+                                    <div class="sparkle s5"></div>
+                                    <div class="sparkle s6"></div>
+                                </div>
+                            </div>
                             <div class="draw-card-back">
-                                <div class="draw-card-emoji"></div>
-                                <div class="draw-card-reward"></div>
+                                <img class="draw-card-back-img" id="drawCardBackImg" src="" alt="카드 결과">
                             </div>
                         </div>
                     </div>
-                    <div class="draw-card" data-index="1">
-                        <div class="draw-card-inner">
-                            <div class="draw-card-front">?</div>
-                            <div class="draw-card-back">
-                                <div class="draw-card-emoji"></div>
-                                <div class="draw-card-reward"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="draw-card" data-index="2">
-                        <div class="draw-card-inner">
-                            <div class="draw-card-front">?</div>
-                            <div class="draw-card-back">
-                                <div class="draw-card-emoji"></div>
-                                <div class="draw-card-reward"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="draw-card" data-index="3">
-                        <div class="draw-card-inner">
-                            <div class="draw-card-front">?</div>
-                            <div class="draw-card-back">
-                                <div class="draw-card-emoji"></div>
-                                <div class="draw-card-reward"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="draw-card" data-index="4">
-                        <div class="draw-card-inner">
-                            <div class="draw-card-front">?</div>
-                            <div class="draw-card-back">
-                                <div class="draw-card-emoji"></div>
-                                <div class="draw-card-reward"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-draw-result" id="cardDrawResult" style="display: none;">
-                    <div class="card-draw-result-text" id="cardDrawResultText"></div>
                 </div>
                 <button class="card-draw-confirm-btn" id="cardDrawConfirmBtn" style="display: none;">확인</button>
             </div>
@@ -7111,6 +7096,11 @@
                     timerCompleteBtnInit.style.background = '';
                     timerCompleteBtnInit.style.color = '';
                 }
+                const timerPauseBtnInit = document.getElementById('timerPauseBtn');
+                if (timerPauseBtnInit) {
+                    timerPauseBtnInit.style.background = '';
+                    timerPauseBtnInit.style.color = '';
+                }
 
                 // 목표시간 표시 업데이트
                 if (timerTargetTime && targetTimeSeconds > 0) {
@@ -7701,18 +7691,6 @@
             });
         }
 
-        // 카드뽑기 화면 뒤로가기 버튼
-        const cardDrawBackBtn = document.getElementById('cardDrawBackBtn');
-        if (cardDrawBackBtn) {
-            cardDrawBackBtn.addEventListener('click', function() {
-                const cardDrawScreen = document.getElementById('cardDrawScreen');
-                if (cardDrawScreen) {
-                    cardDrawScreen.style.display = 'none';
-                }
-                resetCardDraw();
-            });
-        }
-
         // 카드뽑기 확인 버튼
         const cardDrawConfirmBtn = document.getElementById('cardDrawConfirmBtn');
         if (cardDrawConfirmBtn) {
@@ -7725,100 +7703,45 @@
             });
         }
 
-        // 카드 보상 목록
-        const cardRewards = [
-            { emoji: '🔥', text: '집중력\n+10%', message: '집중력이 활활 타오르고 있어!' },
-            { emoji: '⭐', text: '보너스\n+0.5p', message: '보너스 포인트 0.5p 획득!', bonus: 0.5 },
-            { emoji: '💪', text: '의지력\nUP!', message: '의지력이 상승했어! 다음에도 화이팅!' },
-            { emoji: '🍀', text: '행운의\n카드', message: '행운이 찾아왔어! 좋은 일이 생길 거야!' },
-            { emoji: '🎯', text: '정확도\n+15%', message: '목표에 더 가까워지고 있어!' },
-            { emoji: '💎', text: '보너스\n+1p', message: '다이아몬드 카드! 보너스 1p 획득!', bonus: 1 },
-            { emoji: '🌟', text: '오늘의\n스타', message: '오늘 최고의 훈련생이야!' },
-            { emoji: '🏆', text: '챔피언\n카드', message: '챔피언 등급 달성! 대단해!' },
-            { emoji: '❤️', text: '체력\n회복', message: '체력이 회복됐어! 쉬면서 하자!' },
-            { emoji: '🚀', text: '성장\n부스트', message: '성장 속도가 2배로 빨라졌어!' }
+        // 카드 이미지 목록 (랜덤으로 하나 표시)
+        const cardImages = [
+            'https://i.imgur.com/MSCtkBD.png',
+            'https://i.imgur.com/TJUsiXW.png'
         ];
 
         // 카드 뽑기 초기화
         function resetCardDraw() {
-            const cards = document.querySelectorAll('.draw-card');
-            const result = document.getElementById('cardDrawResult');
+            const card = document.getElementById('drawCard');
             const confirmBtn = document.getElementById('cardDrawConfirmBtn');
-            const message = document.querySelector('.card-draw-message');
 
-            cards.forEach(function(card) {
-                card.classList.remove('flipped', 'not-selected');
+            if (card) {
+                card.classList.remove('flipped');
                 card.style.pointerEvents = 'auto';
-            });
-            if (result) result.style.display = 'none';
+            }
             if (confirmBtn) confirmBtn.style.display = 'none';
-            if (message) message.textContent = '카드를 한 장 선택하세요!';
-
-            // 카드에 랜덤 보상 배정
-            assignRandomRewards();
         }
 
-        // 랜덤 보상 배정
-        function assignRandomRewards() {
-            const cards = document.querySelectorAll('.draw-card');
-            const shuffled = cardRewards.slice().sort(function() { return Math.random() - 0.5; });
-            cards.forEach(function(card, i) {
-                var reward = shuffled[i % shuffled.length];
-                card.dataset.emoji = reward.emoji;
-                card.dataset.reward = reward.text;
-                card.dataset.message = reward.message;
-                card.dataset.bonus = reward.bonus || 0;
-                var back = card.querySelector('.draw-card-back');
-                back.querySelector('.draw-card-emoji').textContent = reward.emoji;
-                back.querySelector('.draw-card-reward').textContent = reward.text;
-            });
-        }
+        // 카드 클릭 이벤트 (한 장 뽑기, 랜덤 이미지)
+        const drawCard = document.getElementById('drawCard');
+        if (drawCard) {
+            drawCard.addEventListener('click', function() {
+                if (drawCard.classList.contains('flipped')) return;
 
-        // 카드 클릭 이벤트
-        const cardDrawGrid = document.getElementById('cardDrawGrid');
-        if (cardDrawGrid) {
-            cardDrawGrid.addEventListener('click', function(e) {
-                var card = e.target.closest('.draw-card');
-                if (!card || card.classList.contains('flipped')) return;
+                // 랜덤 이미지 결정
+                var randomImg = cardImages[Math.floor(Math.random() * cardImages.length)];
 
-                // 선택한 카드 뒤집기
-                card.classList.add('flipped');
+                // 카드 뒷면에 이미지 표시
+                var backImg = document.getElementById('drawCardBackImg');
+                if (backImg) backImg.src = randomImg;
 
-                // 나머지 카드 비활성화
-                var allCards = document.querySelectorAll('.draw-card');
-                allCards.forEach(function(c) {
-                    if (c !== card) {
-                        c.classList.add('not-selected');
-                    }
-                });
+                // 카드 뒤집기
+                drawCard.classList.add('flipped');
 
-                // 보너스 포인트 처리
-                var bonus = parseFloat(card.dataset.bonus) || 0;
-                if (bonus > 0) {
-                    totalPoints = Math.round((totalPoints + bonus) * 10) / 10;
-                    savePoints();
-                    updatePointsDisplay();
-                    updateTimerPointsDisplay();
-                }
-
-                // 결과 표시
+                // 확인 버튼 표시
                 setTimeout(function() {
-                    var result = document.getElementById('cardDrawResult');
-                    var resultText = document.getElementById('cardDrawResultText');
                     var confirmBtn = document.getElementById('cardDrawConfirmBtn');
-                    var message = document.querySelector('.card-draw-message');
-
-                    if (message) message.textContent = card.dataset.emoji + ' 카드 획득!';
-                    if (resultText) {
-                        var msg = card.dataset.message;
-                        if (bonus > 0) {
-                            msg += '\n(+' + bonus + 'p 적용됨)';
-                        }
-                        resultText.textContent = msg;
-                    }
-                    if (result) result.style.display = 'block';
                     if (confirmBtn) confirmBtn.style.display = 'inline-block';
-                }, 800);
+                }, 900);
             });
         }
 
