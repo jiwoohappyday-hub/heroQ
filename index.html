@@ -810,13 +810,33 @@
         }
         
         .field-container.drag-over {
-            border: 2px dashed #4A0F50;
+            border: none;
+            border-top: 2.5px solid #4A0F50;
+            border-radius: 16px;
         }
-        
+
         .bottom-field-container.drag-over {
-            border: 2px dashed #4A0F50;
+            border: none;
+            border-top: 2.5px solid #4A0F50;
+            border-radius: 12px;
         }
-        
+
+        .daily-date-box-input-area.dragging {
+            will-change: transform;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0.9;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transform-origin: center center;
+        }
+
+        .daily-date-box-input-area.drag-over {
+            border: none;
+            border-top: 2.5px solid #4A0F50;
+        }
+
         .drag-handle {
             width: 24px;
             height: 24px;
@@ -1393,7 +1413,7 @@
             cursor: pointer;
             transition: background 0.2s, color 0.2s;
         }
-
+ㅌ
         .daily-date-badge.date-selected {
             color: #282B30;
             background: #FFC0CC;
@@ -1465,6 +1485,8 @@
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
+            -webkit-user-select: none;
+            user-select: none;
         }
         
         .daily-date-box-add-btn {
@@ -4656,6 +4678,278 @@
             document.addEventListener('mouseup', handleEnd);
         }
         
+        // 일일목표 입력 필드 드래그 시스템 (document 레벨 이벤트 위임)
+        (function() {
+            var dailyDragState = {
+                pressTimer: null,
+                startX: 0,
+                startY: 0,
+                dragging: false,
+                dragField: null
+            };
+
+            function getDailyInputArea(target) {
+                return target.closest('.daily-date-box-input-area');
+            }
+
+            function getAllDailyFields() {
+                var c = document.getElementById('dailyDateBoxes');
+                return c ? Array.from(c.querySelectorAll('.daily-date-box-input-area')) : [];
+            }
+
+            function findDropTarget(currentY, dragField) {
+                var dailyContainer = document.getElementById('dailyDateBoxes');
+                if (!dailyContainer) return { field: null, container: null };
+
+                // 1단계: 터치 위치에 가장 가까운 컨테이너(박스) 찾기
+                var allBoxFields = dailyContainer.querySelectorAll('.daily-date-box-fields');
+                var bestContainer = null;
+                var bestDist = Infinity;
+                for (var j = 0; j < allBoxFields.length; j++) {
+                    var boxRect = allBoxFields[j].getBoundingClientRect();
+                    // 박스 영역 안에 있으면 거리 0
+                    var dist;
+                    if (currentY >= boxRect.top && currentY <= boxRect.bottom) {
+                        dist = 0;
+                    } else {
+                        dist = Math.min(Math.abs(currentY - boxRect.top), Math.abs(currentY - boxRect.bottom));
+                    }
+                    if (dist < bestDist) {
+                        bestDist = dist;
+                        bestContainer = allBoxFields[j];
+                    }
+                }
+
+                if (!bestContainer) return { field: null, container: null };
+
+                // 2단계: 해당 컨테이너 안에서 삽입 위치 찾기
+                var fields = bestContainer.querySelectorAll('.daily-date-box-input-area');
+                var targetField = null;
+                for (var i = 0; i < fields.length; i++) {
+                    if (fields[i] === dragField) continue;
+                    var rect = fields[i].getBoundingClientRect();
+                    var mid = rect.top + rect.height / 2;
+                    if (currentY < mid) {
+                        targetField = fields[i];
+                        break;
+                    }
+                }
+
+                return { field: targetField, container: bestContainer };
+            }
+
+            // document 레벨 touchstart - 이벤트 위임
+            document.addEventListener('touchstart', function(e) {
+                var inputArea = getDailyInputArea(e.target);
+                if (!inputArea) return;
+                // dailyDateBoxes 안에 있는지 확인
+                if (!inputArea.closest('#dailyDateBoxes')) return;
+
+                dailyDragState.startX = e.touches[0].clientX;
+                dailyDragState.startY = e.touches[0].clientY;
+
+                clearTimeout(dailyDragState.pressTimer);
+                dailyDragState.pressTimer = setTimeout(function() {
+                    // 롱프레스 성공!
+                    var activeEl = document.activeElement;
+                    if (activeEl && activeEl.tagName === 'INPUT') activeEl.blur();
+
+                    document.querySelectorAll('.daily-date-box-input-area.selected').forEach(function(a) {
+                        a.classList.remove('selected');
+                    });
+
+                    if (navigator.vibrate) navigator.vibrate(50);
+
+                    dailyDragState.dragging = true;
+                    dailyDragState.dragField = inputArea;
+                    isDragging = true;
+
+                    inputArea.classList.add('dragging');
+                    inputArea.style.opacity = '0.7';
+                    inputArea.style.transform = 'scale(1.03)';
+                    inputArea.style.zIndex = '999';
+                    inputArea.style.transition = 'opacity 0.15s, transform 0.15s';
+                }, 500);
+            }, true); // capture phase!
+
+            // document 레벨 touchmove
+            document.addEventListener('touchmove', function(e) {
+                var st = dailyDragState;
+
+                if (st.dragging && st.dragField) {
+                    e.preventDefault();
+                    var currentY = e.touches[0].clientY;
+                    var deltaY = currentY - st.startY;
+
+                    requestAnimationFrame(function() {
+                        if (st.dragField) {
+                            st.dragField.style.transform = 'translate3d(0, ' + deltaY + 'px, 0) scale(1.02)';
+                            st.dragField.style.transition = 'none';
+                        }
+                    });
+
+                    var allFields = getAllDailyFields();
+                    var drop = findDropTarget(currentY, st.dragField);
+
+                    allFields.forEach(function(f) {
+                        if (f !== st.dragField) f.classList.remove('drag-over');
+                    });
+                    if (drop.field) {
+                        drop.field.classList.add('drag-over');
+                    }
+                } else if (st.pressTimer) {
+                    // 롱프레스 대기 중 - 10px 이상 움직이면 취소
+                    var cx = e.touches[0].clientX;
+                    var cy = e.touches[0].clientY;
+                    var dist = Math.sqrt(Math.pow(cx - st.startX, 2) + Math.pow(cy - st.startY, 2));
+                    if (dist > 10) {
+                        clearTimeout(st.pressTimer);
+                        st.pressTimer = null;
+                    }
+                }
+            }, { passive: false, capture: true });
+
+            // document 레벨 touchend
+            document.addEventListener('touchend', function(e) {
+                var st = dailyDragState;
+                clearTimeout(st.pressTimer);
+                st.pressTimer = null;
+
+                if (!st.dragging || !st.dragField) return;
+
+                var currentY = e.changedTouches[0].clientY;
+                var allFields = getAllDailyFields();
+                var drop = findDropTarget(currentY, st.dragField);
+
+                st.dragField.style.transition = 'transform 0.25s cubic-bezier(0.2, 0, 0, 1)';
+                st.dragField.style.transform = '';
+
+                var field = st.dragField;
+                setTimeout(function() {
+                    if (drop.field && drop.container) {
+                        drop.container.insertBefore(field, drop.field);
+                    } else if (drop.container) {
+                        drop.container.appendChild(field);
+                    }
+
+                    allFields.forEach(function(f) { f.classList.remove('drag-over'); });
+
+                    field.classList.remove('dragging');
+                    field.style.transition = '';
+                    field.style.transform = '';
+                    field.style.opacity = '';
+                    field.style.zIndex = '';
+                }, 50);
+
+                st.dragField = null;
+                st.dragging = false;
+                isDragging = false;
+            }, true);
+
+            // 마우스 이벤트 (데스크톱)
+            document.addEventListener('mousedown', function(e) {
+                if (e.button !== 0) return;
+                var inputArea = getDailyInputArea(e.target);
+                if (!inputArea) return;
+                if (!inputArea.closest('#dailyDateBoxes')) return;
+
+                dailyDragState.startX = e.clientX;
+                dailyDragState.startY = e.clientY;
+
+                clearTimeout(dailyDragState.pressTimer);
+                dailyDragState.pressTimer = setTimeout(function() {
+                    var activeEl = document.activeElement;
+                    if (activeEl && activeEl.tagName === 'INPUT') activeEl.blur();
+
+                    document.querySelectorAll('.daily-date-box-input-area.selected').forEach(function(a) {
+                        a.classList.remove('selected');
+                    });
+
+                    if (navigator.vibrate) navigator.vibrate(50);
+
+                    dailyDragState.dragging = true;
+                    dailyDragState.dragField = inputArea;
+                    isDragging = true;
+
+                    inputArea.classList.add('dragging');
+                    inputArea.style.opacity = '0.7';
+                    inputArea.style.transform = 'scale(1.03)';
+                    inputArea.style.zIndex = '999';
+                    inputArea.style.transition = 'opacity 0.15s, transform 0.15s';
+                }, 500);
+
+                function onMouseMove(ev) {
+                    var st = dailyDragState;
+                    if (st.dragging && st.dragField) {
+                        ev.preventDefault();
+                        var currentY = ev.clientY;
+                        var deltaY = currentY - st.startY;
+
+                        st.dragField.style.transform = 'translate3d(0, ' + deltaY + 'px, 0) scale(1.02)';
+                        st.dragField.style.transition = 'none';
+
+                        var allFields = getAllDailyFields();
+                        var drop = findDropTarget(currentY, st.dragField);
+                        allFields.forEach(function(f) {
+                            if (f !== st.dragField) f.classList.remove('drag-over');
+                        });
+                        if (drop.field) drop.field.classList.add('drag-over');
+                    } else if (st.pressTimer) {
+                        var dist = Math.sqrt(Math.pow(ev.clientX - st.startX, 2) + Math.pow(ev.clientY - st.startY, 2));
+                        if (dist > 10) {
+                            clearTimeout(st.pressTimer);
+                            st.pressTimer = null;
+                        }
+                    }
+                }
+
+                function onMouseUp(ev) {
+                    var st = dailyDragState;
+                    clearTimeout(st.pressTimer);
+                    st.pressTimer = null;
+
+                    if (st.dragging && st.dragField) {
+                        var currentY = ev.clientY;
+                        var allFields = getAllDailyFields();
+                        var drop = findDropTarget(currentY, st.dragField);
+
+                        st.dragField.style.transition = 'transform 0.25s cubic-bezier(0.2, 0, 0, 1)';
+                        st.dragField.style.transform = '';
+
+                        var field = st.dragField;
+                        setTimeout(function() {
+                            if (drop.field && drop.container) {
+                                drop.container.insertBefore(field, drop.field);
+                            } else if (drop.container) {
+                                drop.container.appendChild(field);
+                            }
+                            allFields.forEach(function(f) { f.classList.remove('drag-over'); });
+                            field.classList.remove('dragging');
+                            field.style.transition = '';
+                            field.style.transform = '';
+                            field.style.opacity = '';
+                            field.style.zIndex = '';
+                        }, 50);
+
+                        st.dragField = null;
+                        st.dragging = false;
+                        isDragging = false;
+                    }
+
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                }
+
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            }, true);
+        })();
+
+        // setupDailyBoxDrag는 이제 document 레벨 이벤트 위임이라 별도 호출 불필요하지만 호환성 유지
+        function setupDailyBoxDrag() {
+            // document 레벨 이벤트 위임으로 자동 처리됨 - 별도 설정 불필요
+        }
+
         // 상단 필드 생성 함수
         function createTopField(afterElement) {
             const allFieldsWrapper = document.getElementById('allFieldsWrapper');
@@ -5063,7 +5357,10 @@
                         
                         newInputArea.appendChild(newInput);
                         fieldsContainer.appendChild(newInputArea);
-                        
+
+                        // 새 필드에 롱프레스 드래그 설정
+                        setupDailyBoxDrag();
+
                         // 포커스
                         setTimeout(() => newInput.focus(), 10);
                     }
@@ -5092,7 +5389,27 @@
                         }
                     }
                 }, true);
-                
+
+                // 입력 완료(blur) 시 selected 해제 → 흰색으로 복귀
+                document.addEventListener('blur', function(e) {
+                    if (e.target.classList.contains('daily-date-box-input')) {
+                        const inputArea = e.target.closest('.daily-date-box-input-area');
+                        if (inputArea) {
+                            inputArea.classList.remove('selected');
+                        }
+                    }
+                }, true);
+
+                // Enter/완료 키 누르면 blur 처리 → 흰색으로 복귀
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && e.target.classList.contains('daily-date-box-input')) {
+                        e.target.blur();
+                    }
+                }, true);
+
+                // daily-date-box 롱프레스 드래그 설정
+                setupDailyBoxDrag();
+
                 window.dailyFieldsEventListenersAdded = true;
             }
         }
@@ -5401,6 +5718,9 @@
 
                 // 해당 날짜의 기간목표 데이터 불러오기
                 loadDailyFieldsForDate(inlineSelectedDate);
+
+                // 드래그 앤 드롭 설정 (패널 표시 후)
+                setupDailyBoxDrag();
             }, 100);
         });
         }
@@ -6483,8 +6803,8 @@
 
             // 패널 전체에서 스와이프 가능하도록
             swipeUpPanel.addEventListener('touchstart', function(e) {
-                // 입력 필드나 체크박스 등은 제외
-                if (e.target.tagName === 'INPUT' || e.target.closest('.daily-checkbox')) {
+                // 입력 필드, 체크박스, 일일목표 박스 영역은 제외 (드래그 앤 드롭용)
+                if (e.target.tagName === 'INPUT' || e.target.closest('.daily-checkbox') || e.target.closest('.daily-date-box')) {
                     return;
                 }
                 panelStartY = e.touches[0].clientY;
@@ -6499,8 +6819,8 @@
             swipeUpPanel.addEventListener('touchmove', function(e) {
                 if (!isPanelSwiping) return;
 
-                // 입력 필드나 체크박스 등은 제외
-                if (e.target.tagName === 'INPUT' || e.target.closest('.daily-checkbox')) {
+                // 입력 필드, 체크박스, 일일목표 박스 영역은 제외
+                if (e.target.tagName === 'INPUT' || e.target.closest('.daily-checkbox') || e.target.closest('.daily-date-box')) {
                     isPanelSwiping = false;
                     return;
                 }
