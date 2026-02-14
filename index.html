@@ -4324,30 +4324,86 @@
         let longPressTimer = null;
         let isDragging = false;
         
-        // 롱프레스 감지 함수
+        // 롱프레스 감지 함수 (터치 + 마우스 지원)
         function setupLongPress(element, callback) {
-            let startTime = 0;
-            
-            element.addEventListener('touchstart', function(e) {
-                startTime = Date.now();
-                longPressTimer = setTimeout(function() {
-                    if (Date.now() - startTime >= 500) { // 500ms 롱프레스
-                        callback(e);
-                        isDragging = true;
-                        element.style.opacity = '0.5';
+            let startX = 0;
+            let startY = 0;
+            let pressTimer = null;
+
+            function startPress(clientX, clientY, origEvent) {
+                startX = clientX;
+                startY = clientY;
+
+                pressTimer = setTimeout(function() {
+                    // 롱프레스 성공 - 입력 필드 blur 처리
+                    const activeInput = element.querySelector('input:focus');
+                    if (activeInput) {
+                        activeInput.blur();
                     }
-                }, 500);
-            });
-            
-            element.addEventListener('touchend', function() {
-                clearTimeout(longPressTimer);
+
+                    // 진동 피드백 (지원되는 경우)
+                    if (navigator.vibrate) {
+                        navigator.vibrate(50);
+                    }
+
+                    isDragging = true;
+                    element.style.opacity = '0.7';
+                    element.style.transform = 'scale(1.03)';
+                    element.style.zIndex = '999';
+                    element.style.transition = 'opacity 0.15s, transform 0.15s';
+                    callback(origEvent);
+                }, 400);
+
+                longPressTimer = pressTimer;
+            }
+
+            function endPress() {
+                clearTimeout(pressTimer);
                 if (!isDragging) {
                     element.style.opacity = '';
+                    element.style.transform = '';
+                    element.style.zIndex = '';
+                    element.style.transition = '';
                 }
+            }
+
+            function movePress(clientX, clientY, e) {
+                if (isDragging) {
+                    e.preventDefault();
+                    return;
+                }
+                const moveX = clientX - startX;
+                const moveY = clientY - startY;
+                const distance = Math.sqrt(moveX * moveX + moveY * moveY);
+                if (distance > 10) {
+                    clearTimeout(pressTimer);
+                }
+            }
+
+            // 터치 이벤트
+            element.addEventListener('touchstart', function(e) {
+                startPress(e.touches[0].clientX, e.touches[0].clientY, e);
+            }, { passive: true });
+
+            element.addEventListener('touchend', endPress);
+
+            element.addEventListener('touchmove', function(e) {
+                movePress(e.touches[0].clientX, e.touches[0].clientY, e);
+            }, { passive: false });
+
+            // 마우스 이벤트 (데스크톱 지원)
+            element.addEventListener('mousedown', function(e) {
+                if (e.button !== 0) return; // 좌클릭만
+                startPress(e.clientX, e.clientY, e);
             });
-            
-            element.addEventListener('touchmove', function() {
-                clearTimeout(longPressTimer);
+
+            element.addEventListener('mouseup', endPress);
+            element.addEventListener('mouseleave', function() {
+                clearTimeout(pressTimer);
+            });
+
+            element.addEventListener('mousemove', function(e) {
+                movePress(e.clientX, e.clientY, e);
             });
         }
         
@@ -4568,6 +4624,8 @@
                         draggedElement.classList.remove('dragging');
                         draggedElement.style.transition = '';
                         draggedElement.style.transform = '';
+                        draggedElement.style.opacity = '';
+                        draggedElement.style.zIndex = '';
                     }
 
                     // 연결된 하단 필드들 정리
